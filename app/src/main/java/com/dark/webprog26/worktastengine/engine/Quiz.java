@@ -75,7 +75,11 @@ public class Quiz implements AnswerGivenListener {
     }
 
     public void resume(){
-        update();
+        if(isGameOver()){
+            mAnswersCountListener.gameIsOver();
+        } else {
+            update();
+        }
     }
 
     public void pause(){
@@ -146,5 +150,9 @@ public class Quiz implements AnswerGivenListener {
         mSharedPreferences.edit().putInt(SAVED_QUESTION_INDEX, mQuestionIndex).apply();
         mSharedPreferences.edit().putInt(TOTAL_ANSWERS_GIVEN, totalAnswersCount).apply();
         mSharedPreferences.edit().putInt(CORRECT_ANSWERS_GIVEN, correctAnswersCount).apply();
+    }
+
+    private boolean isGameOver(){
+        return totalAnswersCount == QUESTIONS_NUMBER;
     }
 }

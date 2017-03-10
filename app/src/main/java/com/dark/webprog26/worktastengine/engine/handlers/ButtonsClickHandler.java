@@ -15,17 +15,15 @@ public class ButtonsClickHandler implements View.OnClickListener {
     private static final String TAG = "ClickHandler";
     private AnswerGivenListener mAnswerGivenListener;
 
-    private Answer[] mAnswers;
     private Button[] mButtons;
 
-    public ButtonsClickHandler(Answer[] mAnswers, Button[] buttons, AnswerGivenListener answerGivenListener) {
-        this.mAnswers = mAnswers;
+    public ButtonsClickHandler(Answer[] answers, Button[] buttons, AnswerGivenListener answerGivenListener) {
         this.mButtons = buttons;
         this.mAnswerGivenListener = answerGivenListener;
 
         for(int i = 0; i < mButtons.length; i++){
-            mButtons[i].setText(mAnswers[i].getAnswerText());
-            mButtons[i].setTag(mAnswers[i].isCorrect());
+            mButtons[i].setText(answers[i].getAnswerText());
+            mButtons[i].setTag(answers[i].isCorrect());
             mButtons[i].setOnClickListener(this);
         }
     }
