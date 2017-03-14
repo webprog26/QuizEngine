@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FirstScreenTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/f_screen</item>
+    </style>
+
 </resources>

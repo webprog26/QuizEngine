@@ -4,6 +4,23 @@
     <string name="correct_answers">Correct %d</string>
     <string name="game_over">Game Over</string>
     <string name="restart">Restart</string>
+    <string name="greetings">Greetings</string>
+    <string name="greetings_text">Turkeyfish--electric catfish silverside orangespine unicorn fish waryfish
+                                    sargassum fish golden shiner redlip blenny gray reef shark.
+                                    Northern pearleye; pirarucu cuskfish tommy ruff coho salmon trout Reef triggerfish lake
+                                    whitefish char; tubeshoulder velvet catfish. Redside; wobbegong Atlantic salmon walu,
+                                    pelican gulper arowana, lampfish mahseer?
+                                    Turkeyfish--electric catfish silverside orangespine unicorn fish waryfish
+                                    sargassum fish golden shiner redlip blenny gray reef shark.
+                                    Northern pearleye; pirarucu cuskfish tommy ruff coho salmon trout Reef triggerfish lake
+                                    whitefish char; tubeshoulder velvet catfish. Redside; wobbegong Atlantic salmon walu,
+                                    pelican gulper arowana, lampfish mahseer?
+                                    Turkeyfish--electric catfish silverside orangespine unicorn fish waryfish
+                                    sargassum fish golden shiner redlip blenny gray reef shark.
+                                    Northern pearleye; pirarucu cuskfish tommy ruff coho salmon trout Reef triggerfish lake
+                                    whitefish char; tubeshoulder velvet catfish. Redside; wobbegong Atlantic salmon walu,
+                                    pelican gulper arowana, lampfish mahseer?</string>
+    <string name="begin_test">Begin test</string>
 
     <string-array name="questions">
         <item>My developers name is</item>
