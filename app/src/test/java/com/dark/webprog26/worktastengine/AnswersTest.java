@@ -23,7 +23,7 @@ public class AnswersTest {
     private AnswerGivenListener mAnswerGivenListener = new AnswerGivenListener() {
         @Override
         public void onAnswerGiven(boolean isCorrect) {
-            //
+            //Empty for testing
         }
     };
 
