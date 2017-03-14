@@ -54,10 +54,10 @@ public class AnswersTest {
         mAnswers[2] = new Answer("Ivan", false);
         mAnswers[3] = new Answer("George", false);
 
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(0), true);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(1), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(2), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(3), false);
+        Assert.assertTrue(mButtonsClickHandlerUnderTest.getAnswer(0));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(1));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(2));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(3));
     }
 
     @Test
@@ -67,10 +67,10 @@ public class AnswersTest {
         mAnswers[2] = new Answer("1812", false);
         mAnswers[3] = new Answer("2017", false);
 
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(0), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(1), true);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(2), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(3), false);
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(0));
+        Assert.assertTrue(mButtonsClickHandlerUnderTest.getAnswer(1));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(2));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(3));
     }
 
     @Test
@@ -80,10 +80,10 @@ public class AnswersTest {
         mAnswers[2] = new Answer("Viola", false);
         mAnswers[3] = new Answer("Balalayka", false);
 
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(0), true);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(1), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(2), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(3), false);
+        Assert.assertTrue(mButtonsClickHandlerUnderTest.getAnswer(0));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(1));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(2));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(3));
     }
 
     @Test
@@ -93,10 +93,10 @@ public class AnswersTest {
         mAnswers[2] = new Answer("Summer", true);
         mAnswers[3] = new Answer("Autumn", false);
 
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(0), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(1), false);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(2), true);
-        Assert.assertEquals(mButtonsClickHandlerUnderTest.getAnswer(3), false);
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(0));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(1));
+        Assert.assertTrue(mButtonsClickHandlerUnderTest.getAnswer(2));
+        Assert.assertFalse(mButtonsClickHandlerUnderTest.getAnswer(3));
     }
 
     @After
