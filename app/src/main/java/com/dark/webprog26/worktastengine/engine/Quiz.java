@@ -111,13 +111,13 @@ public class Quiz implements AnswerGivenListener {
 
         mQuestionTextView.setText(question.getQuestionString());
         Answer[] answers = question.getAnswers();
-        ButtonsClickHandler clickHandler = new ButtonsClickHandler(this);
+        ButtonsClickHandler clickHandler = new ButtonsClickHandler(answers, this);
         for(int i = 0; i < mButtons.length; i++){
             if(mButtons[i].getVisibility() == View.GONE){
                 mButtons[i].setVisibility(View.VISIBLE);
             }
             mButtons[i].setText(answers[i].getAnswerText());
-            mButtons[i].setTag(answers[i].isCorrect());
+            mButtons[i].setTag(i);
             mButtons[i].setOnClickListener(clickHandler);
         }
     }
