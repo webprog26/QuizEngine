@@ -8,10 +8,12 @@ public class Answer {
 
     private String mAnswerText;
     private boolean isCorrect;
+    private int mPoints;
 
-    public Answer(String answerText, boolean isCorrect) {
+    public Answer(String answerText, boolean isCorrect, int points) {
         this.mAnswerText = answerText;
         this.isCorrect = isCorrect;
+        this.mPoints = points;
     }
 
     public String getAnswerText() {
@@ -20,5 +22,13 @@ public class Answer {
 
     public boolean isCorrect() {
         return isCorrect;
+    }
+
+    public int getPoints() {
+        return mPoints;
+    }
+
+    public void setPoints(int mPoints) {
+        this.mPoints = mPoints;
     }
 }

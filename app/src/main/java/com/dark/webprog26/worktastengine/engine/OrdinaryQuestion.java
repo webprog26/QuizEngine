@@ -6,12 +6,12 @@ package com.dark.webprog26.worktastengine.engine;
 
 public class OrdinaryQuestion extends Question {
 
-    public OrdinaryQuestion(String mQuestionString, Answer[] answers, int points) {
-        super(mQuestionString, answers, points);
+    public OrdinaryQuestion(String mQuestionString, Answer[] answers) {
+        super(mQuestionString, answers);
     }
 
     @Override
-    protected void setQuestionType() {
-        this.mQuestionType = Question.THIRD_ORDER_QUESTION;
+    protected int setCurrentQuestionType() {
+        return Question.SECOND_ORDER_QUESTION;
     }
 }

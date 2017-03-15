@@ -78,11 +78,11 @@ public class Quiz implements AnswerGivenListener {
         for(String questionString: questionsRes){
             Answer[] answers = new Answer[ANSWERS_PER_QUESTION_NUMBER];
             for(int j = 0; j < ANSWERS_PER_QUESTION_NUMBER; j++){
-                answers[j] = new Answer(answersRes[z], Boolean.parseBoolean(answersVariablesRes[z]));
+                answers[j] = new Answer(answersRes[z], Boolean.parseBoolean(answersVariablesRes[z]), j);
                 Log.i(TAG, answersRes[z] + Boolean.parseBoolean(answersVariablesRes[z]));
                 z++;
             }
-            mQuestions[i] = new OrdinaryQuestion(questionString, answers, i);
+            mQuestions[i] = new OrdinaryQuestion(questionString, answers);
             i++;
         }
     }
@@ -143,7 +143,7 @@ public class Quiz implements AnswerGivenListener {
     }
 
     @Override
-    public void onAnswerGiven(boolean isCorrect) {
+    public void onAnswerGiven(boolean isCorrect, int points) {
         totalAnswersCount++;
         mAnswersCountListener.updateAnswersCount(totalAnswersCount);
         mProgressUpdater.updateProgress(ProgressCountManager.getProgressCount(totalAnswersCount, QUESTIONS_NUMBER));
@@ -156,7 +156,7 @@ public class Quiz implements AnswerGivenListener {
             if(isPaused){
                 isPaused = false;
             }
-            correctAnswersCount += mQuestions[mQuestionIndex].getPoints();
+            correctAnswersCount += points;
             mAnswersCountListener.updateCorrectAnswersCount(getCorrectAnswersCount());
         }
         if(hasNextQuestion()){

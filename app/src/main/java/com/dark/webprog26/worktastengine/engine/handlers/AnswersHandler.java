@@ -23,10 +23,14 @@ public class AnswersHandler implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        mAnswerGivenListener.onAnswerGiven(getAnswer((int) v.getTag()));
+        mAnswerGivenListener.onAnswerGiven(getAnswer((int) v.getTag()), getPoints((int) v.getTag()));
     }
 
     protected boolean getAnswer(int i){
         return mAnswers[i].isCorrect();
+    }
+
+    protected int getPoints(int i){
+        return mAnswers[i].getPoints();
     }
 }

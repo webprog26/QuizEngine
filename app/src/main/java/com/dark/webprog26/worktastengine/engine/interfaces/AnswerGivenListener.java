@@ -5,5 +5,5 @@ package com.dark.webprog26.worktastengine.engine.interfaces;
  */
 
 public interface AnswerGivenListener {
-    public void onAnswerGiven(boolean isCorrect);
+    public void onAnswerGiven(boolean isCorrect, int points);
 }
