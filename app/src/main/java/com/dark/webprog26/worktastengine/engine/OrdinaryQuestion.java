@@ -12,6 +12,11 @@ public class OrdinaryQuestion extends Question {
 
     @Override
     protected int setCurrentQuestionType() {
-        return Question.SECOND_ORDER_QUESTION;
+        return Question.FIRST_ORDER_QUESTION;
+    }
+
+    @Override
+    protected boolean shallShowHelp() {
+        return false;
     }
 }

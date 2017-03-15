@@ -147,7 +147,7 @@ public class Quiz implements AnswerGivenListener {
         totalAnswersCount++;
         mAnswersCountListener.updateAnswersCount(totalAnswersCount);
         mProgressUpdater.updateProgress(ProgressCountManager.getProgressCount(totalAnswersCount, QUESTIONS_NUMBER));
-        if(!isCorrect){
+        if(mQuestions[mQuestionIndex].shallShowHelp()){
             if(!isPaused){
                 isPaused = true;
             }

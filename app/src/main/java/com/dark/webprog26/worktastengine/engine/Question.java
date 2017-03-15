@@ -16,7 +16,11 @@ public abstract class Question {
     public Question(String mQuestionString, Answer[] answers) {
         this.mQuestionString = mQuestionString;
         this.mAnswers = answers;
-        setQuestionType(setCurrentQuestionType());
+        try {
+            setQuestionType();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     protected String getQuestionString() {
@@ -31,9 +35,16 @@ public abstract class Question {
         return mQuestionType;
     }
 
-    public void setQuestionType(int mQuestionType) {
-        this.mQuestionType = mQuestionType;
+    public void setQuestionType() throws Exception {
+        int questionType = setCurrentQuestionType();
+        if(questionType != FIRST_ORDER_QUESTION && questionType != SECOND_ORDER_QUESTION){
+            throw new Exception("Wrong question type");
+        } else {
+            this.mQuestionType = questionType;
+        }
     }
 
     protected abstract int setCurrentQuestionType();
+
+    protected abstract boolean shallShowHelp();
 }
