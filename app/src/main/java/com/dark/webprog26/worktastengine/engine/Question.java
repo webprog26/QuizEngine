@@ -1,31 +1,43 @@
 package com.dark.webprog26.worktastengine.engine;
 
-import java.util.Arrays;
-
 /**
- * Created by webpr on 10.03.2017.
+ * Created by webpr on 15.03.2017.
  */
 
-public class Question {
+public abstract class Question {
 
     private String mQuestionString;
     private Answer[] mAnswers;
+    private int mPoints;
+    private int mAnswersNum;
 
-    public Question(String mQuestionString, Answer[] answers) {
+    public Question(String mQuestionString, Answer[] answers, int points) {
         this.mQuestionString = mQuestionString;
         this.mAnswers = answers;
+        this.mPoints = points;
     }
 
-    public String getQuestionString() {
+    protected String getQuestionString() {
         return mQuestionString;
     }
 
-    public Answer[] getAnswers() {
+    protected Answer[] getAnswers() {
         return mAnswers;
     }
 
-    @Override
-    public String toString() {
-        return getQuestionString() + "/n" + Arrays.toString(getAnswers());
+    public int getPoints() {
+        return mPoints;
+    }
+
+    public void setPoints(int mPoints) {
+        this.mPoints = mPoints;
+    }
+
+    public int getAnswersNum() {
+        return mAnswersNum;
+    }
+
+    public void setAnswersNum(int mAnswersNum) {
+        this.mAnswersNum = mAnswersNum;
     }
 }

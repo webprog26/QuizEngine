@@ -9,10 +9,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.dark.webprog26.worktastengine.R;
-import com.dark.webprog26.worktastengine.engine.handlers.ButtonsClickHandler;
+import com.dark.webprog26.worktastengine.engine.handlers.AnswersHandler;
 import com.dark.webprog26.worktastengine.engine.interfaces.AnswerGivenListener;
 import com.dark.webprog26.worktastengine.engine.interfaces.AnswersCountListener;
 import com.dark.webprog26.worktastengine.engine.interfaces.ProgressUpdater;
+import com.dark.webprog26.worktastengine.engine.interfaces.ReferenceStarter;
 import com.dark.webprog26.worktastengine.engine.managers.ProgressCountManager;
 
 /**
@@ -32,22 +33,26 @@ public class Quiz implements AnswerGivenListener {
     private int mQuestionIndex;
     private int totalAnswersCount;
     private int correctAnswersCount;
-    private Question[] mQuestions = new Question[QUESTIONS_NUMBER];
+    private OrdinaryQuestion[] mQuestions = new OrdinaryQuestion[QUESTIONS_NUMBER];
     private TextView mQuestionTextView;
     private Button[] mButtons;
     private SharedPreferences mSharedPreferences;
     private AnswersCountListener mAnswersCountListener;
     private ProgressUpdater mProgressUpdater;
+    private ReferenceStarter mReferenceStarter;
+    private boolean isPaused = false;
 
     public Quiz(Context context,
                 Button[] buttons,
                 TextView questionTextView,
                 AnswersCountListener answersCountListener,
-                ProgressUpdater progressUpdater) {
+                ProgressUpdater progressUpdater,
+                ReferenceStarter referenceStarter) {
         this.mQuestionTextView = questionTextView;
         this.mButtons = buttons;
         this.mAnswersCountListener = answersCountListener;
         this.mProgressUpdater = progressUpdater;
+        this.mReferenceStarter = referenceStarter;
         initializeQuiz(context);
     }
 
@@ -74,12 +79,15 @@ public class Quiz implements AnswerGivenListener {
                 Log.i(TAG, answersRes[z] + Boolean.parseBoolean(answersVariablesRes[z]));
                 z++;
             }
-            mQuestions[i] = new Question(questionString, answers);
+            mQuestions[i] = new OrdinaryQuestion(questionString, answers, i);
             i++;
         }
     }
 
     public void resume(){
+        if(isPaused){
+            isPaused = false;
+        }
         if(isGameOver()){
             mAnswersCountListener.gameIsOver();
         } else {
@@ -91,7 +99,7 @@ public class Quiz implements AnswerGivenListener {
        saveStats();
     }
 
-    private Question getNextQuestion(){
+    private OrdinaryQuestion getNextQuestion(){
         return mQuestions[mQuestionIndex];
     }
 
@@ -113,11 +121,14 @@ public class Quiz implements AnswerGivenListener {
      * Update questions and answers variants
      */
     private void update(){
-        Question question = getNextQuestion();
+        if(isPaused){
+            return;
+        }
+        OrdinaryQuestion question = getNextQuestion();
 
         mQuestionTextView.setText(question.getQuestionString());
         Answer[] answers = question.getAnswers();
-        ButtonsClickHandler clickHandler = new ButtonsClickHandler(answers, this);
+        AnswersHandler clickHandler = new AnswersHandler(answers, this);
         for(int i = 0; i < mButtons.length; i++){
             if(mButtons[i].getVisibility() == View.GONE){
                 mButtons[i].setVisibility(View.VISIBLE);
@@ -133,14 +144,19 @@ public class Quiz implements AnswerGivenListener {
         totalAnswersCount++;
         mAnswersCountListener.updateAnswersCount(totalAnswersCount);
         mProgressUpdater.updateProgress(ProgressCountManager.getProgressCount(totalAnswersCount, QUESTIONS_NUMBER));
-        if(isCorrect){
-           correctAnswersCount++;
-           mAnswersCountListener.updateCorrectAnswersCount(getCorrectAnswersCount());
+        if(!isCorrect){
+            isPaused = true;
+            mReferenceStarter.startReference(mQuestionIndex);
+        } else {
+            isPaused = false;
+            correctAnswersCount += mQuestions[mQuestionIndex].getPoints();
+            mAnswersCountListener.updateCorrectAnswersCount(getCorrectAnswersCount());
         }
         if(hasNextQuestion()){
             mQuestionIndex++;
             update();
-        } else {
+        }
+        else {
             mAnswersCountListener.gameIsOver();
         }
     }

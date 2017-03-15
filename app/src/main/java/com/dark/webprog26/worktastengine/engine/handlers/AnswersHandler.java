@@ -9,14 +9,14 @@ import com.dark.webprog26.worktastengine.engine.interfaces.AnswerGivenListener;
  * Created by webpr on 10.03.2017.
  */
 
-public class ButtonsClickHandler implements View.OnClickListener {
+public class AnswersHandler implements View.OnClickListener {
 
     private static final String TAG = "ClickHandler";
 
     private Answer[] mAnswers;
     private AnswerGivenListener mAnswerGivenListener;
 
-    public ButtonsClickHandler(Answer[] answers, AnswerGivenListener answerGivenListener) {
+    public AnswersHandler(Answer[] answers, AnswerGivenListener answerGivenListener) {
         this.mAnswers = answers;
         this.mAnswerGivenListener = answerGivenListener;
     }

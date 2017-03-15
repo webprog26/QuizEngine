@@ -1,5 +1,6 @@
 package com.dark.webprog26.worktastengine;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +13,14 @@ import android.widget.TextView;
 import com.dark.webprog26.worktastengine.engine.Quiz;
 import com.dark.webprog26.worktastengine.engine.interfaces.AnswersCountListener;
 import com.dark.webprog26.worktastengine.engine.interfaces.ProgressUpdater;
+import com.dark.webprog26.worktastengine.engine.interfaces.ReferenceStarter;
 import com.dark.webprog26.worktastengine.engine.managers.ProgressCountManager;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
-public class QuizActivity extends AppCompatActivity implements AnswersCountListener, ProgressUpdater {
+public class QuizActivity extends AppCompatActivity implements AnswersCountListener, ProgressUpdater, ReferenceStarter {
 
     @BindViews({R.id.btnFirst, R.id.btnSecond, R.id.btnThird, R.id.btnFourth})
     Button[] mButtons;
@@ -51,7 +53,7 @@ public class QuizActivity extends AppCompatActivity implements AnswersCountListe
         mQuiz = new Quiz(this,
                 mButtons,
                 mTvQuestion,
-                this, this);
+                this, this, this);
     }
 
     @Override
@@ -99,5 +101,12 @@ public class QuizActivity extends AppCompatActivity implements AnswersCountListe
     @Override
     public void updateProgress(int steps) {
         mPbQuizProgress.setProgress(steps);
+    }
+
+    @Override
+    public void startReference(int index) {
+        Intent referenceIntent = new Intent(this, ReferenceActivity.class);
+        referenceIntent.putExtra(ReferenceActivity.REFERENCE_INDEX, index);
+        startActivity(referenceIntent);
     }
 }

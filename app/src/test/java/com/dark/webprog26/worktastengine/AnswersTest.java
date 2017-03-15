@@ -1,10 +1,8 @@
 package com.dark.webprog26.worktastengine;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
-import com.dark.webprog26.worktastengine.engine.handlers.ButtonsClickHandler;
+import com.dark.webprog26.worktastengine.engine.handlers.AnswersHandler;
 import com.dark.webprog26.worktastengine.engine.interfaces.AnswerGivenListener;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -29,7 +27,7 @@ public class AnswersTest {
 
     private ButtonsClickHandlerUnderTest mButtonsClickHandlerUnderTest;
 
-    private class ButtonsClickHandlerUnderTest extends ButtonsClickHandler{
+    private class ButtonsClickHandlerUnderTest extends AnswersHandler {
 
         ButtonsClickHandlerUnderTest(Answer[] answers, AnswerGivenListener answerGivenListener) {
             super(answers, answerGivenListener);
