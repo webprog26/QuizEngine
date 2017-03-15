@@ -52,12 +52,14 @@
                 android:id="@+id/btnFirst"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="gone"/>
             <Button
                 android:id="@+id/btnSecond"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="gone"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,12 +68,14 @@
                 android:id="@+id/btnThird"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="gone"/>
             <Button
                 android:id="@+id/btnFourth"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
     <Button

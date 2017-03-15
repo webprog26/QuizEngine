@@ -16,6 +16,9 @@ import com.dark.webprog26.worktastengine.engine.interfaces.ProgressUpdater;
 import com.dark.webprog26.worktastengine.engine.interfaces.ReferenceStarter;
 import com.dark.webprog26.worktastengine.engine.managers.ProgressCountManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by webpr on 10.03.2017.
  */
@@ -125,11 +128,11 @@ public class Quiz implements AnswerGivenListener {
             return;
         }
         OrdinaryQuestion question = getNextQuestion();
-
+        Log.i(TAG, "question type = " + question.getQuestionType());
         mQuestionTextView.setText(question.getQuestionString());
         Answer[] answers = question.getAnswers();
         AnswersHandler clickHandler = new AnswersHandler(answers, this);
-        for(int i = 0; i < mButtons.length; i++){
+        for(int i = 0; i < answers.length; i++){
             if(mButtons[i].getVisibility() == View.GONE){
                 mButtons[i].setVisibility(View.VISIBLE);
             }
@@ -145,10 +148,14 @@ public class Quiz implements AnswerGivenListener {
         mAnswersCountListener.updateAnswersCount(totalAnswersCount);
         mProgressUpdater.updateProgress(ProgressCountManager.getProgressCount(totalAnswersCount, QUESTIONS_NUMBER));
         if(!isCorrect){
-            isPaused = true;
+            if(!isPaused){
+                isPaused = true;
+            }
             mReferenceStarter.startReference(mQuestionIndex);
         } else {
-            isPaused = false;
+            if(isPaused){
+                isPaused = false;
+            }
             correctAnswersCount += mQuestions[mQuestionIndex].getPoints();
             mAnswersCountListener.updateCorrectAnswersCount(getCorrectAnswersCount());
         }
