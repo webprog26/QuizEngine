@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WorkTastEngine</string>
     <string name="answer_given">Answers: %d</string>
-    <string name="correct_answers">Correct %d</string>
+    <string name="points_scored">Points %.1f</string>
     <string name="game_over">Game Over</string>
     <string name="restart">Restart</string>
     <string name="greetings">Greetings</string>
@@ -21,49 +21,4 @@
                                     whitefish char; tubeshoulder velvet catfish. Redside; wobbegong Atlantic salmon walu,
                                     pelican gulper arowana, lampfish mahseer?</string>
     <string name="begin_test">Begin test</string>
-
-    <string-array name="questions">
-        <item>My developers name is</item>
-        <item>My developer was born in</item>
-        <item>My developer likes to play on</item>
-        <item>My developers favourite season is</item>
-    </string-array>
-
-    <string-array name="answers">
-        <item>Vova</item>
-        <item>Misha</item>
-        <item>Ivan</item>
-        <item>George</item>
-        <item>1990</item>
-        <item>1983</item>
-        <item>1812</item>
-        <item>2017</item>
-        <item>Guitar</item>
-        <item>Bandjo</item>
-        <item>Viola</item>
-        <item>Balalayka</item>
-        <item>Winter</item>
-        <item>Spring</item>
-        <item>Summer</item>
-        <item>Autumn</item>
-    </string-array>
-
-    <string-array name="answers_variables">
-        <item>true</item>
-        <item>false</item>
-        <item>false</item>
-        <item>false</item>
-        <item>false</item>
-        <item>true</item>
-        <item>false</item>
-        <item>false</item>
-        <item>true</item>
-        <item>false</item>
-        <item>false</item>
-        <item>false</item>
-        <item>false</item>
-        <item>false</item>
-        <item>true</item>
-        <item>false</item>
-    </string-array>
 </resources>

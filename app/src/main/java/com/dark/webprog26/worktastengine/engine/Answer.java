@@ -6,14 +6,20 @@ package com.dark.webprog26.worktastengine.engine;
 
 public class Answer {
 
-    private String mAnswerText;
-    private boolean isCorrect;
-    private int mPoints;
+    public long id;
+    public String mAnswerText;
+    public boolean isCorrect;
+    public long nextQuestionId;
+    public double mPoints;
 
-    public Answer(String answerText, boolean isCorrect, int points) {
-        this.mAnswerText = answerText;
-        this.isCorrect = isCorrect;
-        this.mPoints = points;
+    public Answer() {
+    }
+
+    public Answer(long id, String mAnswerText, double mPoints, long nextQuestionId) {
+        this.id = id;
+        this.mAnswerText = mAnswerText;
+        this.mPoints = mPoints;
+        this.nextQuestionId = nextQuestionId;
     }
 
     public String getAnswerText() {
@@ -24,11 +30,27 @@ public class Answer {
         return isCorrect;
     }
 
-    public int getPoints() {
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getNextQuestionId() {
+        return nextQuestionId;
+    }
+
+    public double getPoints() {
         return mPoints;
     }
 
-    public void setPoints(int mPoints) {
-        this.mPoints = mPoints;
+    public void setPoints(double points) {
+        this.mPoints = points;
+    }
+
+    public void setNextQuestionId(long nextQuestionId) {
+        this.nextQuestionId = nextQuestionId;
     }
 }

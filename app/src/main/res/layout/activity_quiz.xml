@@ -10,6 +10,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dark.webprog26.worktastengine.QuizActivity">
+    <ProgressBar
+        android:id="@+id/pbQuizLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="false"
+        android:layout_centerInParent="true"/>
     <RelativeLayout
         android:id="@+id/stats"
         android:layout_width="match_parent"
@@ -23,7 +29,7 @@
             android:layout_alignParentLeft="true"
             android:textAppearance="?android:attr/textAppearanceSmall"/>
         <TextView
-            android:id="@+id/tvAnswersCorrect"
+            android:id="@+id/tvPoints"
             android:layout_width="wrap_content"
             android:textColor="@android:color/black"
             android:layout_height="wrap_content"
@@ -36,7 +42,6 @@
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/app_name"
         android:gravity="center"
         android:layout_below="@+id/stats"
         android:layout_marginTop="@dimen/activity_vertical_margin"/>
@@ -53,13 +58,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="gone"/>
+                android:visibility="invisible"/>
             <Button
                 android:id="@+id/btnSecond"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="gone"/>
+                android:visibility="invisible"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,13 +74,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="gone"/>
+                android:visibility="invisible"/>
             <Button
                 android:id="@+id/btnFourth"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="gone"/>
+                android:visibility="invisible"/>
         </LinearLayout>
     </LinearLayout>
     <Button
@@ -91,5 +96,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"/>
+        android:max="100"
+        android:visibility="gone"/>
 </RelativeLayout>

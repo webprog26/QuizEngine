@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        //App entry point
+        //Show splash
         getWindow().setBackgroundDrawableResource(R.drawable.f_screen);
     }
 
@@ -25,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //Hide splash
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
+        //Loading Fragment with greetings and the button to start Quiz (QuizActivity)
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentGreetings fragmentGreetings = (FragmentGreetings) fragmentManager.findFragmentByTag(GREETINGS_FRAGMENT_TAG);
         if(fragmentGreetings == null){
