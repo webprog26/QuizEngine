@@ -22,12 +22,14 @@ public class Quiz {
 
     //This class manages the quiz
 
-    public static final int QUESTIONS_NUMBER = 15;//only 15 questions in test mode
+    public static final int REQUIRED_QUESTIONS_NUMBER = 3;//only 4 required questions in test mode
 
     //Constants to save necessary data in SharedPreferences
     public static final String SAVED_QUESTION_ID = "saved_question_id";
     public static final String TOTAL_ANSWERS_GIVEN = "total_answers_given";
     public static final String CURRENT_POINTS = "answers_given";
+
+    public static final String REQUIRED_QUESTIONS_PASSED = "required_questions_passed";
 
     private static final String TAG = "Quiz_TAG";
 
@@ -38,6 +40,7 @@ public class Quiz {
     private Button[] mButtons;
     private SharedPreferences mSharedPreferences;
     private FirebaseManager mFirebaseManager;
+    private int mRequiredQuestionsPassed;
 
     public Quiz(Button[] buttons,
                 TextView questionTextView, SharedPreferences sharedPreferences, FirebaseManager firebaseManager) {
@@ -45,6 +48,7 @@ public class Quiz {
         this.mButtons = buttons;
         this.mSharedPreferences = sharedPreferences;
         this.mFirebaseManager = firebaseManager;
+        this.mRequiredQuestionsPassed = mSharedPreferences.getInt(REQUIRED_QUESTIONS_PASSED, 0);
 
         initializeQuiz(mSharedPreferences);
     }
@@ -85,8 +89,9 @@ public class Quiz {
      */
     private void update(Question question){
         this.mQuestionId = question.getId();
+        long questionType = question.getQuestionType();
         List<Answer> answers = question.getAnswers();
-        AnswersHandler answersHandler = new AnswersHandler(answers);
+        AnswersHandler answersHandler = new AnswersHandler(answers, questionType);
         for (Answer answer: answers){
             Log.i(TAG, answer.getAnswerText());
         }
@@ -119,11 +124,11 @@ public class Quiz {
     }
 
     /**
-     * Checks does game has next question by comparing totalAnswersCount with QUESTIONS_NUMBER
+     * Checks does game has next question by comparing totalAnswersCount with REQUIRED_QUESTIONS_NUMBER
      * @return boolean
      */
     public boolean hasNextQuestion(){
-        return totalAnswersCount < QUESTIONS_NUMBER;
+        return mRequiredQuestionsPassed < REQUIRED_QUESTIONS_NUMBER;
     }
 
     /**
@@ -133,6 +138,7 @@ public class Quiz {
         mSharedPreferences.edit().putLong(SAVED_QUESTION_ID, mQuestionId).apply();
         mSharedPreferences.edit().putInt(TOTAL_ANSWERS_GIVEN, totalAnswersCount).apply();
         mSharedPreferences.edit().putString(CURRENT_POINTS, String.valueOf(currentPointsCount)).apply();
+        mSharedPreferences.edit().putInt(REQUIRED_QUESTIONS_PASSED, mRequiredQuestionsPassed).apply();
     }
 
     /**
@@ -148,7 +154,16 @@ public class Quiz {
     public void resetQuiz(){
         setTotalAnswersCount(0);
         setCurrentPointsCount(0);
+        setRequiredQuestionsPassed(0);
         saveStats();
         mFirebaseManager.getNextQuestion(0);
+    }
+
+    public int getRequiredQuestionsPassed() {
+        return mRequiredQuestionsPassed;
+    }
+
+    public void setRequiredQuestionsPassed(int mRequiredQuestionsPassed) {
+        this.mRequiredQuestionsPassed = mRequiredQuestionsPassed;
     }
 }

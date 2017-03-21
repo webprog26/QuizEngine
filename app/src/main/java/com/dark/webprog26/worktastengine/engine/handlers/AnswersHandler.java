@@ -1,8 +1,10 @@
 package com.dark.webprog26.worktastengine.engine.handlers;
 
+import android.util.Log;
 import android.view.View;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
+import com.dark.webprog26.worktastengine.engine.Question;
 import com.dark.webprog26.worktastengine.engine.events.QuestionAnsweredEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -23,17 +25,24 @@ public class AnswersHandler implements View.OnClickListener {
      */
 
     private List<Answer> mAnswers;
+    private long mQuestionType;
 
-    public AnswersHandler(List<Answer> answers) {
+    public AnswersHandler(List<Answer> answers, long questionType) {
         this.mAnswers = answers;
+        this.mQuestionType = questionType;
     }
 
     @Override
     public void onClick(View v) {
-        EventBus.getDefault().post(new QuestionAnsweredEvent(getAnswer((int) v.getTag())));
+        Log.i(TAG, "next question id is " + getAnswer((int) v.getTag()).getNextQuestionId());
+        EventBus.getDefault().post(new QuestionAnsweredEvent(getAnswer((int) v.getTag()), isQuestionRequired(mQuestionType)));
     }
 
     protected Answer getAnswer(int i){
         return mAnswers.get(i);
+    }
+
+    protected boolean isQuestionRequired(long type){
+        return type == Question.REQUIRED_QUESTION;
     }
 }

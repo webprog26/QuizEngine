@@ -71,7 +71,7 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         int totalAnswersGiven = sharedPreferences.getInt(Quiz.TOTAL_ANSWERS_GIVEN, 0);
         updateAnswersCount(totalAnswersGiven);
         updatePointsScoredCount(Double.parseDouble(sharedPreferences.getString(Quiz.CURRENT_POINTS, "0")));
-        updateProgress(ProgressCountManager.getProgressCount(totalAnswersGiven, Quiz.QUESTIONS_NUMBER));
+        updateProgress(ProgressCountManager.getProgressCount(sharedPreferences.getInt(Quiz.REQUIRED_QUESTIONS_PASSED, 0), Quiz.REQUIRED_QUESTIONS_NUMBER));
 
         //Initializing Quiz instance
         mQuiz = new Quiz(mButtons, mTvQuestion, sharedPreferences, mFirebaseManager);
@@ -179,7 +179,10 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         updateAnswersCount(mQuiz.getTotalAnswersCount());
         updatePointsScoredCount(mQuiz.getCurrentPointsCount());
 
-        updateProgress(ProgressCountManager.getProgressCount(mQuiz.getTotalAnswersCount(), Quiz.QUESTIONS_NUMBER));
+        if(questionAnsweredEvent.isIsQuestionRequired()){
+            mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
+            updateProgress(ProgressCountManager.getProgressCount(mQuiz.getRequiredQuestionsPassed(), Quiz.REQUIRED_QUESTIONS_NUMBER));
+        }
 
         mFirebaseManager.getNextQuestion(answer.getNextQuestionId());
     }

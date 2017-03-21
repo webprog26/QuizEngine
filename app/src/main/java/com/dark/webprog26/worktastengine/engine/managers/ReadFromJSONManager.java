@@ -89,6 +89,7 @@ public class ReadFromJSONManager {
                                         singleQuestionObject.getString(QUESTION_IMAGE_NAME));
                             }
                             if(question != null){
+                                Log.i(TAG, question.toString());
                                 //add question instance to List
                                 questionsList.add(question);
                             }

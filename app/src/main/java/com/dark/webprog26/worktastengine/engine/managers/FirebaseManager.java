@@ -1,6 +1,7 @@
 package com.dark.webprog26.worktastengine.engine.managers;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
@@ -9,6 +10,8 @@ import com.dark.webprog26.worktastengine.engine.Quiz;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
 import com.dark.webprog26.worktastengine.engine.firebase_app.QuizFirebaseApplication;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +45,8 @@ public class FirebaseManager {
     private static final String QUESTION_STRING = "questionString";
     private static final String QUESTION_TYPE = "questionType";
     private static final String QUESTION_IMAGE_NAME = "questionImageName";
+
+    private static final String IS_FIRST_LAUNCH = "is_first_launch";
 
     //Firebase references
     private FirebaseDatabase mDatabase;

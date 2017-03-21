@@ -14,12 +14,18 @@ public class QuestionAnsweredEvent {
      */
 
     private final Answer mAnswer;
+    private final boolean mIsQuestionRequired;
 
-    public QuestionAnsweredEvent(Answer answer) {
+    public QuestionAnsweredEvent(Answer answer, boolean isQuestionRequired) {
         this.mAnswer = answer;
+        this.mIsQuestionRequired = isQuestionRequired;
     }
 
     public Answer getAnswer() {
         return mAnswer;
+    }
+
+    public boolean isIsQuestionRequired() {
+        return mIsQuestionRequired;
     }
 }

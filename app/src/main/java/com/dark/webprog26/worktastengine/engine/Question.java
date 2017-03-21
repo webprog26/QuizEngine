@@ -24,6 +24,7 @@ public class Question {
 
     public Question(long id, String mQuestionString, List<Answer> answers, long questionType, String questionImageName) {
         this.mId = id;
+        this.mQuestionType = questionType;
         this.mQuestionString = mQuestionString;
         this.mAnswers = answers;
         this.mQuestionImageName = questionImageName;
