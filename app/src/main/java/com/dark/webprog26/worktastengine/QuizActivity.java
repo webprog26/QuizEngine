@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
 import com.dark.webprog26.worktastengine.engine.Quiz;
-import com.dark.webprog26.worktastengine.engine.events.FirebaseFilledWithValuesEvent;
 import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionAnsweredEvent;
@@ -63,16 +61,19 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         setContentView(R.layout.activity_quiz);
         //Binding QuizActivity to ButterKnife instance
         ButterKnife.bind(this);
+        //Initializing FirebaseManager instance to perform quiz-database connection possible
         mFirebaseManager = new FirebaseManager(PreferenceManager.getDefaultSharedPreferences(this));
 
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //Reading game scores saved in SharedPrefernces and update game
         int totalAnswersGiven = sharedPreferences.getInt(Quiz.TOTAL_ANSWERS_GIVEN, 0);
         updateAnswersCount(totalAnswersGiven);
         updatePointsScoredCount(Double.parseDouble(sharedPreferences.getString(Quiz.CURRENT_POINTS, "0")));
-
         updateProgress(ProgressCountManager.getProgressCount(totalAnswersGiven, Quiz.QUESTIONS_NUMBER));
 
+        //Initializing Quiz instance
         mQuiz = new Quiz(mButtons, mTvQuestion, sharedPreferences, mFirebaseManager);
     }
 
@@ -88,8 +89,11 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         super.onResume();
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
         if(mQuiz.hasNextQuestion()){
+            //Somebody may think that it is useless: to check does data exists everytime quiz resumes,
+            //but what if the user deletes app data, while it is paused? By this reason, i'm sure it is necessary step
             mFirebaseManager.checkIsFirebaseAlreadyFilled();
         } else {
+            //Game is over
             mQuiz.gameOver();
         }
     }
@@ -97,13 +101,22 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
     @Override
     protected void onPause() {
         super.onPause();
+        //App is paused, save stats
         mQuiz.pause();
     }
 
+    /**
+     * Updates given answers count on user screen
+     * @param answersCount int
+     */
     private void updateAnswersCount(int answersCount) {
         mTvAnswersGiven.setText(getString(R.string.answer_given, answersCount));
     }
 
+    /**
+     * Updates scored point count on user screen
+     * @param pointsScored double
+     */
     private void updatePointsScoredCount(double pointsScored) {
         mTvPoints.setText(getString(R.string.points_scored, pointsScored));
     }
@@ -115,21 +128,34 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
 
     @Override
     protected void onStop() {
+        //Unregistering EventBus to avoid memory leaks
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
+    /**
+     * Handles QuestionsReadFromJSONEvent. Calls {@link FirebaseManager} uploadValuesToDb() method
+     * @param questionsReadFromJSONEvent {@link QuestionsReadFromJSONEvent}
+     */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onQuestionsReadFromJSONEvent(QuestionsReadFromJSONEvent questionsReadFromJSONEvent){
         mFirebaseManager.uploadValuesToDb(questionsReadFromJSONEvent.getQuestionsList());
     }
 
+    /**
+     * Handles NextQuestionEvent. Manages progress bars and answer-buttons visibility,
+     * resumes quiz with next question by calling Quiz method resume();
+     * @param nextQuestionEvent {@link NextQuestionEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNextQuestionEvent(NextQuestionEvent nextQuestionEvent){
+
+        //Showed while data is uploading to database. Normally at the first app's launch
         if(mPbQuizLoading.getVisibility() == View.VISIBLE){
             mPbQuizLoading.setVisibility(View.GONE);
         }
 
+        //Indicates user quiz progress
         if(mPbQuizProgress.getVisibility() == View.GONE){
             mPbQuizProgress.setVisibility(View.VISIBLE);
         }
@@ -140,11 +166,16 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         mQuiz.resume(nextQuestionEvent.getQuestion());
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFirebaseFilledWithValuesEvent(FirebaseFilledWithValuesEvent firebaseFilledWithValuesEvent){
-        Log.i(TAG, "FirebaseFilledWithValuesEvent");
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onFirebaseFilledWithValuesEvent(FirebaseFilledWithValuesEvent firebaseFilledWithValuesEvent){
+//        Log.i(TAG, "FirebaseFilledWithValuesEvent");
+//    }
 
+    /**
+     * Handles QuestionAnsweredEvent. Updates scores and user progress, calls {@link FirebaseManager} getNextQuestion() method
+     * based on next question id from chosen answer
+     * @param questionAnsweredEvent {@link QuestionAnsweredEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
         Answer answer = questionAnsweredEvent.getAnswer();
@@ -158,11 +189,20 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         mFirebaseManager.getNextQuestion(answer.getNextQuestionId());
     }
 
+    /**
+     * Handles ReadJSONFromAssetsEvent. Calls {@link ReadFromJSONManager} jsonReadFromAssets() asynchronously
+     * @param readJSONFromAssetsEvent {@link ReadJSONFromAssetsEvent}
+     */
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onReadJSONFromAssetsEvent(ReadJSONFromAssetsEvent readJSONFromAssetsEvent){
         ReadFromJSONManager.jsonReadFromAssets(ReadJSONFromAssetsManager.loadJSONFromAsset(getAssets(), readJSONFromAssetsEvent.getJSONFileName()));
     }
 
+    /**
+     * Handles GameOverEvent. Informs user that game is over, gives him possibility to restart the quiz.
+     * Resets quiz state by calling Quiz resetQuiz() method, resets game stats to the default state
+     * @param gameOverEvent {@link GameOverEvent}
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGameOverEvent(GameOverEvent gameOverEvent){
         mTvQuestion.setText(getString(R.string.game_over));

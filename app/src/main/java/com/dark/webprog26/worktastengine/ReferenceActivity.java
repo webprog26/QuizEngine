@@ -9,6 +9,7 @@ public class ReferenceActivity extends AppCompatActivity {
 
     private static final String TAG = "ReferenceActivity";
 
+    //Reference index to read reference from database
     public static final String REFERENCE_INDEX = "reference_index";
 
     @Override

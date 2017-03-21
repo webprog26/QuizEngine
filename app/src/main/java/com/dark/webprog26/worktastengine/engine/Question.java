@@ -8,9 +8,12 @@ import java.util.List;
 
 public class Question {
 
-    public static final int FIRST_ORDER_QUESTION = 0;
-    public static final int SECOND_ORDER_QUESTION = 1;
+    //Questions types
+    public static final int REQUIRED_QUESTION = 0;
+    public static final int OPTIONAL_QUESTION = 1;
 
+    //Whatever Question instance is formed from the FirebaseDatabase just like the Answer instance, it has no public fields
+    //The reason is it has List of answers, so it couldn't ne constructed automatically
     private long mId;
     private String mQuestionString;
     private List<Answer> mAnswers;
@@ -76,6 +79,7 @@ public class Question {
         return false;
     }
 
+    //Just for testing mode
     @Override
     public String toString() {
         return "question with id" + getId() + "\n"

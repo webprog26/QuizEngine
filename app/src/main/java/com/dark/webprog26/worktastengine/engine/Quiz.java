@@ -20,7 +20,11 @@ import java.util.List;
 
 public class Quiz {
 
+    //This class manages the quiz
+
     public static final int QUESTIONS_NUMBER = 4;//only 4 questions in test mode
+
+    //Constants to save necessary data in SharedPreferences
     public static final String SAVED_QUESTION_ID = "saved_question_id";
     public static final String TOTAL_ANSWERS_GIVEN = "total_answers_given";
     public static final String CURRENT_POINTS = "answers_given";
@@ -45,15 +49,29 @@ public class Quiz {
         initializeQuiz(mSharedPreferences);
     }
 
+    /**
+     * initializes the Quiz with previously saved values, If there is no saved values, initializes by default
+     * @param sharedPreferences {@link SharedPreferences}
+     */
     private void initializeQuiz(SharedPreferences sharedPreferences){
         setCurrentPointsCount(Double.parseDouble(sharedPreferences.getString(CURRENT_POINTS, "0")));
         setTotalAnswersCount(sharedPreferences.getInt(TOTAL_ANSWERS_GIVEN, 0));
     }
 
+    /**
+     * Runs due to {@link com.dark.webprog26.worktastengine.QuizActivity} lifecycle onPause() callback
+     * calls saveStats() method
+     */
     public void pause(){
        saveStats();
     }
 
+    /**
+     * Runs due to {@link com.dark.webprog26.worktastengine.QuizActivity} lifecycle onResume() callback.
+     * checks does game has next question via hasNextQuestion() method and based on the value it returns
+     * updates quiz by calling update() method or ends the game by calling gameOver() method
+     * @param question {@link Question}
+     */
     public void resume(Question question){
         if(!hasNextQuestion()){
             gameOver();
@@ -100,20 +118,33 @@ public class Quiz {
         this.currentPointsCount = currentPointsCount;
     }
 
+    /**
+     * Checks does game has next question by comparing totalAnswersCount with QUESTIONS_NUMBER
+     * @return boolean
+     */
     public boolean hasNextQuestion(){
         return totalAnswersCount < QUESTIONS_NUMBER;
     }
 
+    /**
+     * Saves values needed fro restart/resuming the quiz in {@link SharedPreferences}
+     */
     private void saveStats(){
         mSharedPreferences.edit().putLong(SAVED_QUESTION_ID, mQuestionId).apply();
         mSharedPreferences.edit().putInt(TOTAL_ANSWERS_GIVEN, totalAnswersCount).apply();
         mSharedPreferences.edit().putString(CURRENT_POINTS, String.valueOf(currentPointsCount)).apply();
     }
 
+    /**
+     * Runs new GameOverEvent()
+     */
     public void gameOver(){
         EventBus.getDefault().post(new GameOverEvent());
     }
 
+    /**
+     * Resets quiz to it's default state when restarting
+     */
     public void resetQuiz(){
         setTotalAnswersCount(0);
         setCurrentPointsCount(0);

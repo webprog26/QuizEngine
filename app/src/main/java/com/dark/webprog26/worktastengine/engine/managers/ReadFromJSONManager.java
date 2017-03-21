@@ -20,9 +20,31 @@ import java.util.List;
 
 public class ReadFromJSONManager {
 
+    /**
+     * Reads JSON file with questions/answers from device assets directory
+     */
+
+
     private static final String TAG = "JSONManager";
 
+    private static final String QUESTIONS_ROOT = "questions";
+    private static final String ANSWERS = "answers";
+    private static final String ANSWER_ID = "id";
+    private static final String ANSWER_TEXT = "text";
+    private static final String ANSWER_POINTS = "points";
+    private static final String ANSWER_NEXT_QUESTION_ID = "nextQuestionId";
+
+    private static final String QUESTION_ID = "id";
+    private static final String QUESTION_TEXT = "text";
+    private static final String QUESTION_TYPE = "type";
+    private static final String QUESTION_IMAGE_NAME = "questionImageName";
+
+    /**
+     * Reads JSON file with questions/answers from device assets directory
+     * @param jsonString {@link String}
+     */
     public static void jsonReadFromAssets(String jsonString) {
+        //Initializes collection, this time ArrayList, to store Question instances, that have been read
         List<Question> questionsList = new ArrayList<>();
         if(jsonString != null){
             JSONObject questionsJSONObject = null;
@@ -35,8 +57,7 @@ public class ReadFromJSONManager {
             if(questionsJSONObject != null){
                 JSONArray jsonArray = null;
                 try{
-                    jsonArray = questionsJSONObject.getJSONArray("questions");
-                    Log.i(TAG, "Array has " + jsonArray.length() + " questions");
+                    jsonArray = questionsJSONObject.getJSONArray(QUESTIONS_ROOT);
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -48,26 +69,27 @@ public class ReadFromJSONManager {
                             singleQuestionObject = jsonArray.getJSONObject(i);
                             Question question = null;
                             if(singleQuestionObject != null){
-                                JSONArray jsonAnswers = singleQuestionObject.getJSONArray("answers");
+                                JSONArray jsonAnswers = singleQuestionObject.getJSONArray(ANSWERS);
                                 int answersLength = jsonAnswers.length();
                                 List<Answer> answers = new ArrayList<>();
                                 for(int j = 0; j < answersLength; j++){
                                     JSONObject answerObject = jsonAnswers.getJSONObject(j);
-                                    Answer answer = new Answer(answerObject.getLong("id"),
-                                            answerObject.getString("text"),
-                                            answerObject.getDouble("points"),
-                                            answerObject.getLong("nextQuestionId"));
+                                    Answer answer = new Answer(answerObject.getLong(ANSWER_ID),
+                                            answerObject.getString(ANSWER_TEXT),
+                                            answerObject.getDouble(ANSWER_POINTS),
+                                            answerObject.getLong(ANSWER_NEXT_QUESTION_ID));
                                     answers.add(answer);
                                 }
+                                //Construct new Question instance
                                 question = new Question(
-                                        singleQuestionObject.getLong("id"),
-                                        singleQuestionObject.getString("text"),
+                                        singleQuestionObject.getLong(QUESTION_ID),
+                                        singleQuestionObject.getString(QUESTION_TEXT),
                                         answers,
-                                        singleQuestionObject.getInt("type"),
-                                        singleQuestionObject.getString("questionImageName"));
+                                        singleQuestionObject.getInt(QUESTION_TYPE),
+                                        singleQuestionObject.getString(QUESTION_IMAGE_NAME));
                             }
                             if(question != null){
-                                Log.i(TAG, question.toString());
+                                //add question instance to List
                                 questionsList.add(question);
                             }
                         }
@@ -82,7 +104,7 @@ public class ReadFromJSONManager {
         } else {
             Log.i(TAG, "jsonString is null");
         }
-
+        //Run new QuestionsReadFromJSONEvent with questions List as a parameter
         EventBus.getDefault().post(new QuestionsReadFromJSONEvent(questionsList));
     }
 }

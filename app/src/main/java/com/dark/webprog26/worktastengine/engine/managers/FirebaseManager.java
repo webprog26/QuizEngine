@@ -1,13 +1,11 @@
 package com.dark.webprog26.worktastengine.engine.managers;
 
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
 import com.dark.webprog26.worktastengine.engine.Question;
 import com.dark.webprog26.worktastengine.engine.Quiz;
-import com.dark.webprog26.worktastengine.engine.events.FirebaseFilledWithValuesEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
 import com.dark.webprog26.worktastengine.engine.firebase_app.QuizFirebaseApplication;
@@ -37,6 +35,7 @@ public class FirebaseManager {
 
     private SharedPreferences mSharedPreferences;
 
+    //Question fields to read'em from database
     private static final String QUESTION_ID  ="id";
     private static final String QUESTION_ANSWERS_NUM = "answersNum";
     private static final String QUESTION_ANSWERS = "answers";
@@ -48,27 +47,36 @@ public class FirebaseManager {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReference;
 
-    //for test
+    //Question id as a key to read next question from
     private long mNextQuestionId;
 
     public FirebaseManager(SharedPreferences sharedPreferences) {
+        //Static FirebaseDatabase instance received from QuizFirebaseApplication.class
         mDatabase = QuizFirebaseApplication.getFirebaseDatabase();
+        //DatabaseReference instance to perform requests to database
         mReference = mDatabase.getReference(FIREBASE_DATABASE_ROOT);
         this.mSharedPreferences = sharedPreferences;
+        //When com.dark.webprog26.worktastengine.QuizActivity comes to paused state it writes question id to SharedPreferences
+        //When app resumes it's work or restarts FirebaseManager reads question id value from SharedPreferences
+        //If there is no previously saved question id, for example when app starts for the first time
+        // or if the user deletes app's data manually quiz will start from the first question, which id = 0
         this.mNextQuestionId = mSharedPreferences.getLong(Quiz.SAVED_QUESTION_ID, 0);
     }
 
+    /**
+     * This method add {@link ValueEventListener} to {@link DatabaseReference} and first of all
+     * checks is there any data in database at all. If database has data, then it calls getNextQuestion(long questionIndex) method,
+     * otherwise runs new ReadJSONFromAssetsEvent
+     */
     public void checkIsFirebaseAlreadyFilled(){
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
-                    Log.i(TAG, "database exists");
-                    //Database exists
+                    //Database exists. Get next question from it
                     getNextQuestion(mNextQuestionId);
                 } else {
-                    //Database not exists
-                    Log.i(TAG, "database not exists");
+                    //Database not exists. Read values from JSON file stored in device assets directory
                     EventBus.getDefault().post(new ReadJSONFromAssetsEvent(JSON_FILE_NAME));
                 }
             }
@@ -80,14 +88,22 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Uploads Question instances to database.
+     * @param questionList {@link List}
+     */
     public void uploadValuesToDb(List<Question> questionList){
         for(Question question: questionList){
             //Upload values to database
             mReference.child(String.valueOf(question.getId())).setValue(question);
         }
-        EventBus.getDefault().post(new FirebaseFilledWithValuesEvent());
     }
 
+    /**
+     * Reads question from database and constructs {@link Question} instance.
+     * Runs new NextQuestionEvent.
+     * @param questionIndex
+     */
     public void getNextQuestion(long questionIndex){
         Log.i(TAG, "next question index " + questionIndex);
         mReference.child(String.valueOf(questionIndex)).addListenerForSingleValueEvent(new ValueEventListener() {

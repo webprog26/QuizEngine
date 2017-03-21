@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //App entry point
-        //Show splash
+        //Show splash with logo
         getWindow().setBackgroundDrawableResource(R.drawable.f_screen);
     }
 
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Hide splash
+        //Hide splash, load default quiz background
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
         //Loading Fragment with greetings and the button to start Quiz (QuizActivity)
         FragmentManager fragmentManager = getSupportFragmentManager();

@@ -6,5 +6,9 @@ package com.dark.webprog26.worktastengine.engine.interfaces;
 
 public interface ProgressUpdater {
 
+    /**
+     * Updates quiz progress to given steps
+     * @param steps
+     */
     public void updateProgress(int steps);
 }

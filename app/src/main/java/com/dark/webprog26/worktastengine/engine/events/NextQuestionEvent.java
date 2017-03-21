@@ -8,6 +8,11 @@ import com.dark.webprog26.worktastengine.engine.Question;
 
 public class NextQuestionEvent {
 
+    /**
+     * As a part of {@link com.dark.webprog26.worktastengine.engine.managers.FirebaseManager} this event takes place
+     * when QuizActivity needs next question to read from FirebaseDatabase
+     */
+
     private final Question mQuestion;
 
     public NextQuestionEvent(Question question) {

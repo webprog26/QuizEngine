@@ -11,6 +11,18 @@ import java.io.InputStream;
 
 public class ReadJSONFromAssetsManager {
 
+    /**
+     * Reads JSON file from device assets directory
+     */
+
+    private static final String PROPER_UTF_8_ENCODING = "UTF-8";
+
+    /**
+     * Reads JSON file directly from device assets directory
+     * @param assetManager {@link AssetManager}
+     * @param jsonFilename {@link String}
+     * @return String
+     */
     public static String loadJSONFromAsset(AssetManager assetManager, String jsonFilename) {
         String json;
         try {
@@ -19,7 +31,7 @@ public class ReadJSONFromAssetsManager {
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            json = new String(buffer, PROPER_UTF_8_ENCODING);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;

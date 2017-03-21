@@ -6,12 +6,17 @@ package com.dark.webprog26.worktastengine.engine;
 
 public class Answer {
 
+    //Answer instance
+
+    //Fields declared as public. It hurts the encapsulation principle,
+    // but necessary to fill them with values directly from FirebaseDatabase
     public long id;
     public String mAnswerText;
     public boolean isCorrect;
     public long nextQuestionId;
     public double mPoints;
 
+    //Default empty constructor is another FirebaseDatabase condition
     public Answer() {
     }
 

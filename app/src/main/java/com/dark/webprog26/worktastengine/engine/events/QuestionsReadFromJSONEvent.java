@@ -10,6 +10,12 @@ import java.util.List;
 
 public class QuestionsReadFromJSONEvent {
 
+    /**
+     * This event takes place when all the values from JSON file stored in device assets directory has been read.
+     * Yandling this QuizActivity calls {@link com.dark.webprog26.worktastengine.engine.managers.FirebaseManager}
+     * method uploadValuesToDb(List<Question> questionList)
+     */
+
     private final List<Question> mQuestionsList;
 
     public QuestionsReadFromJSONEvent(List<Question> questionsList) {

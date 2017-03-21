@@ -8,6 +8,11 @@ import android.content.res.AssetManager;
 
 public class ReadJSONFromAssetsEvent {
 
+    /**
+     * This event takes place when there is no data in FirebaseDatabase to run the quiz, so the app should
+     * read this data from JSON file stored in device assets directory
+     */
+
     private final String mJSONFileName;
 
     public ReadJSONFromAssetsEvent(String mJSONFileName) {

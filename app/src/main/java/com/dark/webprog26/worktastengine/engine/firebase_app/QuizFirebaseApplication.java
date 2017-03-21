@@ -21,6 +21,10 @@ public class QuizFirebaseApplication extends Application {
         mFirebaseDatabase.setPersistenceEnabled(true);
     }
 
+    /**
+     * Returns initialized {@link FirebaseDatabase} instance to read questions from it.
+     * @return FirebaseDatabase
+     */
     public static FirebaseDatabase getFirebaseDatabase() {
         return mFirebaseDatabase;
     }

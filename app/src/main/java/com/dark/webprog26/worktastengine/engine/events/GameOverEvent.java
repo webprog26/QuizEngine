@@ -6,6 +6,10 @@ package com.dark.webprog26.worktastengine.engine.events;
 
 public class GameOverEvent {
 
+    /**
+     * This event takes place when there is no more questions to answer.
+     * Handling this QuizActivity gives user possibility to restart quiz;
+     */
     public GameOverEvent() {
     }
 }

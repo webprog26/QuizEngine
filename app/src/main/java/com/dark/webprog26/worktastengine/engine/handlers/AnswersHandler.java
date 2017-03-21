@@ -17,6 +17,11 @@ public class AnswersHandler implements View.OnClickListener {
 
     private static final String TAG = "ClickHandler";
 
+    /**
+     * Handles clicks on answers buttons, and runs {@link QuestionAnsweredEvent}
+     * that contains answer chosen by the user
+     */
+
     private List<Answer> mAnswers;
 
     public AnswersHandler(List<Answer> answers) {
