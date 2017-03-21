@@ -166,11 +166,6 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         mQuiz.resume(nextQuestionEvent.getQuestion());
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onFirebaseFilledWithValuesEvent(FirebaseFilledWithValuesEvent firebaseFilledWithValuesEvent){
-//        Log.i(TAG, "FirebaseFilledWithValuesEvent");
-//    }
-
     /**
      * Handles QuestionAnsweredEvent. Updates scores and user progress, calls {@link FirebaseManager} getNextQuestion() method
      * based on next question id from chosen answer
