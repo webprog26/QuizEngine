@@ -8,7 +8,7 @@ public interface ProgressUpdater {
 
     /**
      * Updates quiz progress to given steps
-     * @param steps
+     * @param steps int
      */
     public void updateProgress(int steps);
 }

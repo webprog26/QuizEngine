@@ -22,7 +22,7 @@ public class Quiz {
 
     //This class manages the quiz
 
-    public static final int QUESTIONS_NUMBER = 4;//only 4 questions in test mode
+    public static final int QUESTIONS_NUMBER = 15;//only 15 questions in test mode
 
     //Constants to save necessary data in SharedPreferences
     public static final String SAVED_QUESTION_ID = "saved_question_id";
