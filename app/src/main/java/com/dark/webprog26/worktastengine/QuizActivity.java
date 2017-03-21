@@ -17,9 +17,12 @@ import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionAnsweredEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionsReadFromJSONEvent;
+import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
 import com.dark.webprog26.worktastengine.engine.interfaces.ProgressUpdater;
 import com.dark.webprog26.worktastengine.engine.managers.FirebaseManager;
 import com.dark.webprog26.worktastengine.engine.managers.ProgressCountManager;
+import com.dark.webprog26.worktastengine.engine.managers.ReadFromJSONManager;
+import com.dark.webprog26.worktastengine.engine.managers.ReadJSONFromAssetsManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -85,7 +88,7 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         super.onResume();
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
         if(mQuiz.hasNextQuestion()){
-            mFirebaseManager.checkIsFirebaseAlreadyFilled(getAssets());
+            mFirebaseManager.checkIsFirebaseAlreadyFilled();
         } else {
             mQuiz.gameOver();
         }
@@ -153,6 +156,11 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         updateProgress(ProgressCountManager.getProgressCount(mQuiz.getTotalAnswersCount(), Quiz.QUESTIONS_NUMBER));
 
         mFirebaseManager.getNextQuestion(answer.getNextQuestionId());
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onReadJSONFromAssetsEvent(ReadJSONFromAssetsEvent readJSONFromAssetsEvent){
+        ReadFromJSONManager.jsonReadFromAssets(ReadJSONFromAssetsManager.loadJSONFromAsset(getAssets(), readJSONFromAssetsEvent.getJSONFileName()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

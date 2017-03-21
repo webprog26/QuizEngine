@@ -9,6 +9,7 @@ import com.dark.webprog26.worktastengine.engine.Question;
 import com.dark.webprog26.worktastengine.engine.Quiz;
 import com.dark.webprog26.worktastengine.engine.events.FirebaseFilledWithValuesEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
+import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
 import com.dark.webprog26.worktastengine.engine.firebase_app.QuizFirebaseApplication;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,7 +58,7 @@ public class FirebaseManager {
         this.mNextQuestionId = mSharedPreferences.getLong(Quiz.SAVED_QUESTION_ID, 0);
     }
 
-    public void checkIsFirebaseAlreadyFilled(final AssetManager assetManager){
+    public void checkIsFirebaseAlreadyFilled(){
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -68,7 +69,7 @@ public class FirebaseManager {
                 } else {
                     //Database not exists
                     Log.i(TAG, "database not exists");
-                    ReadFromJSONManager.jsonReadFromAssets(ReadJSONFromAssetsManager.loadJSONFromAsset(assetManager, JSON_FILE_NAME));
+                    EventBus.getDefault().post(new ReadJSONFromAssetsEvent(JSON_FILE_NAME));
                 }
             }
 
