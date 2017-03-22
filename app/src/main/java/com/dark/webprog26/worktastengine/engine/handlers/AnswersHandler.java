@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
 import com.dark.webprog26.worktastengine.engine.Question;
+import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionAnsweredEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,8 +35,9 @@ public class AnswersHandler implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.i(TAG, "next question id is " + getAnswer((int) v.getTag()).getNextQuestionId());
-        EventBus.getDefault().post(new QuestionAnsweredEvent(getAnswer((int) v.getTag()), isQuestionRequired(mQuestionType)));
+        int answerIndex = (int) v.getTag();
+        Log.i(TAG, "next question id is " + getAnswer(answerIndex).getNextQuestionId());
+        EventBus.getDefault().post(new QuestionAnsweredEvent(getAnswer(answerIndex), isQuestionRequired(mQuestionType)));
     }
 
     protected Answer getAnswer(int i){
@@ -45,4 +47,5 @@ public class AnswersHandler implements View.OnClickListener {
     protected boolean isQuestionRequired(long type){
         return type == Question.REQUIRED_QUESTION;
     }
+
 }

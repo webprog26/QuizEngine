@@ -11,6 +11,7 @@ public class Question {
     //Questions types
     public static final int REQUIRED_QUESTION = 0;
     public static final int OPTIONAL_QUESTION = 1;
+    public static final int LAST_QUESTION_ID = -1;
 
     //Whatever Question instance is formed from the FirebaseDatabase just like the Answer instance, it has no public fields
     //The reason is it has List of answers, so it couldn't ne constructed automatically

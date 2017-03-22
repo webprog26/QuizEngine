@@ -8,17 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
+import com.dark.webprog26.worktastengine.engine.Question;
 import com.dark.webprog26.worktastengine.engine.Quiz;
 import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionAnsweredEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionsReadFromJSONEvent;
 import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
-import com.dark.webprog26.worktastengine.engine.interfaces.ProgressUpdater;
 import com.dark.webprog26.worktastengine.engine.managers.FirebaseManager;
-import com.dark.webprog26.worktastengine.engine.managers.ProgressCountManager;
 import com.dark.webprog26.worktastengine.engine.managers.ReadFromJSONManager;
 import com.dark.webprog26.worktastengine.engine.managers.ReadJSONFromAssetsManager;
 
@@ -30,11 +30,9 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 
-public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
+public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity_TAG";
-
-
 
     //Initializing GUI
     @BindViews({R.id.btnFirst, R.id.btnSecond, R.id.btnThird, R.id.btnFourth})
@@ -47,8 +45,6 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
     TextView mTvPoints;
     @BindView(R.id.btnRestart)
     Button mBtnRestart;
-    @BindView(R.id.pbQuizProgress)
-    ProgressBar mPbQuizProgress;
     @BindView(R.id.pbQuizLoading)
     ProgressBar mPbQuizLoading;
 
@@ -62,16 +58,13 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
         //Binding QuizActivity to ButterKnife instance
         ButterKnife.bind(this);
         //Initializing FirebaseManager instance to perform quiz-database connection possible
-        mFirebaseManager = new FirebaseManager(PreferenceManager.getDefaultSharedPreferences(this));
-
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mFirebaseManager = new FirebaseManager(sharedPreferences);
 
         //Reading game scores saved in SharedPrefernces and update game
         int totalAnswersGiven = sharedPreferences.getInt(Quiz.TOTAL_ANSWERS_GIVEN, 0);
         updateAnswersCount(totalAnswersGiven);
         updatePointsScoredCount(Double.parseDouble(sharedPreferences.getString(Quiz.CURRENT_POINTS, "0")));
-        updateProgress(ProgressCountManager.getProgressCount(sharedPreferences.getInt(Quiz.REQUIRED_QUESTIONS_PASSED, 0), Quiz.REQUIRED_QUESTIONS_NUMBER));
 
         //Initializing Quiz instance
         mQuiz = new Quiz(mButtons, mTvQuestion, sharedPreferences, mFirebaseManager);
@@ -88,14 +81,9 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
     protected void onResume() {
         super.onResume();
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
-        if(mQuiz.hasNextQuestion()){
             //Somebody may think that it is useless: to check does data exists everytime quiz resumes,
             //but what if the user deletes app data, while it is paused? By this reason, i'm sure it is necessary step
             mFirebaseManager.checkIsFirebaseAlreadyFilled();
-        } else {
-            //Game is over
-            mQuiz.gameOver();
-        }
     }
 
     @Override
@@ -119,11 +107,6 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
      */
     private void updatePointsScoredCount(double pointsScored) {
         mTvPoints.setText(getString(R.string.points_scored, pointsScored));
-    }
-
-    @Override
-    public void updateProgress(int steps) {
-        mPbQuizProgress.setProgress(steps);
     }
 
     @Override
@@ -155,11 +138,6 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
             mPbQuizLoading.setVisibility(View.GONE);
         }
 
-        //Indicates user quiz progress
-        if(mPbQuizProgress.getVisibility() == View.GONE){
-            mPbQuizProgress.setVisibility(View.VISIBLE);
-        }
-
         for(Button button: mButtons){
             button.setVisibility(View.INVISIBLE);
         }
@@ -174,14 +152,23 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
         Answer answer = questionAnsweredEvent.getAnswer();
-        mQuiz.setTotalAnswersCount(mQuiz.getTotalAnswersCount() + 1);
+        int totalAnswersGiven = mQuiz.getTotalAnswersCount();
+        mQuiz.setTotalAnswersCount(totalAnswersGiven + 1);
         mQuiz.setCurrentPointsCount(mQuiz.getCurrentPointsCount() + answer.getPoints());
         updateAnswersCount(mQuiz.getTotalAnswersCount());
         updatePointsScoredCount(mQuiz.getCurrentPointsCount());
 
+        if(totalAnswersGiven == Quiz.BUY_FULL_VERSION_OFFER_MARKER){
+            Toast.makeText(this, getString(R.string.buy_full_version_offer), Toast.LENGTH_SHORT).show();
+        }
+
         if(questionAnsweredEvent.isIsQuestionRequired()){
             mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
-            updateProgress(ProgressCountManager.getProgressCount(mQuiz.getRequiredQuestionsPassed(), Quiz.REQUIRED_QUESTIONS_NUMBER));
+        }
+
+        if(questionAnsweredEvent.getAnswer().getNextQuestionId() == Question.LAST_QUESTION_ID){
+            mQuiz.gameOver();
+            return;
         }
 
         mFirebaseManager.getNextQuestion(answer.getNextQuestionId());
@@ -205,10 +192,6 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
     public void onGameOverEvent(GameOverEvent gameOverEvent){
         mTvQuestion.setText(getString(R.string.game_over));
 
-        if(mPbQuizProgress.getVisibility() == View.VISIBLE){
-            mPbQuizProgress.setVisibility(View.GONE);
-        }
-
         for(Button button: mButtons){
             button.setVisibility(View.INVISIBLE);
         }
@@ -222,7 +205,6 @@ public class QuizActivity extends AppCompatActivity implements ProgressUpdater {
                 mQuiz.resetQuiz();
                 updateAnswersCount(mQuiz.getTotalAnswersCount());
                 updatePointsScoredCount(mQuiz.getCurrentPointsCount());
-                updateProgress(0);
                 v.setVisibility(View.GONE);
             }
         });

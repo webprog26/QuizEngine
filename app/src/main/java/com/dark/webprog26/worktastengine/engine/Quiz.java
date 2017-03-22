@@ -22,14 +22,14 @@ public class Quiz {
 
     //This class manages the quiz
 
-    public static final int REQUIRED_QUESTIONS_NUMBER = 3;//only 4 required questions in test mode
-
     //Constants to save necessary data in SharedPreferences
     public static final String SAVED_QUESTION_ID = "saved_question_id";
     public static final String TOTAL_ANSWERS_GIVEN = "total_answers_given";
     public static final String CURRENT_POINTS = "answers_given";
 
     public static final String REQUIRED_QUESTIONS_PASSED = "required_questions_passed";
+
+    public static final int BUY_FULL_VERSION_OFFER_MARKER = 10;
 
     private static final String TAG = "Quiz_TAG";
 
@@ -77,11 +77,7 @@ public class Quiz {
      * @param question {@link Question}
      */
     public void resume(Question question){
-        if(!hasNextQuestion()){
-            gameOver();
-        } else {
             update(question);
-        }
     }
 
     /**
@@ -121,14 +117,6 @@ public class Quiz {
 
     public void setCurrentPointsCount(double currentPointsCount) {
         this.currentPointsCount = currentPointsCount;
-    }
-
-    /**
-     * Checks does game has next question by comparing totalAnswersCount with REQUIRED_QUESTIONS_NUMBER
-     * @return boolean
-     */
-    public boolean hasNextQuestion(){
-        return mRequiredQuestionsPassed < REQUIRED_QUESTIONS_NUMBER;
     }
 
     /**
