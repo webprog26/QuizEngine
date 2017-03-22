@@ -43,6 +43,10 @@ public class QuizActivity extends AppCompatActivity {
     TextView mTvAnswersGiven;
     @BindView(R.id.tvPoints)
     TextView mTvPoints;
+    @BindView(R.id.btnSkipQuestion)
+    Button mBtnSkipQuestion;
+    @BindView(R.id.btnResumeQuiz)
+    Button mBtnResumeQuestion;
     @BindView(R.id.btnRestart)
     Button mBtnRestart;
     @BindView(R.id.pbQuizLoading)

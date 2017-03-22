@@ -4,6 +4,8 @@
     <string name="points_scored">Points %.1f</string>
     <string name="game_over">Game Over</string>
     <string name="restart">Restart</string>
+    <string name="skip_question">Skip</string>
+    <string name="resume_quiz">Resume</string>
     <string name="greetings">Greetings</string>
     <string name="greetings_text">Turkeyfish--electric catfish silverside orangespine unicorn fish waryfish
                                     sargassum fish golden shiner redlip blenny gray reef shark.
