@@ -11,15 +11,17 @@
         android:name=".engine.firebase_app.QuizFirebaseApplication">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/FirstScreenTheme">
+            android:theme="@style/FirstScreenTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QuizActivity" />
-        <activity android:name=".ReferenceActivity"></activity>
+        <activity android:name=".QuizActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ReferenceActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
-
 </manifest>

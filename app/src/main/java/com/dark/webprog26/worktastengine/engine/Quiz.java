@@ -24,6 +24,7 @@ public class Quiz {
 
     //Constants to save necessary data in SharedPreferences
     public static final String SAVED_QUESTION_ID = "saved_question_id";
+    public static final String NEXT_QUESTION_ID = "next_question_id";
     public static final String TOTAL_ANSWERS_GIVEN = "total_answers_given";
     public static final String CURRENT_POINTS = "answers_given";
 
@@ -34,6 +35,7 @@ public class Quiz {
     private static final String TAG = "Quiz_TAG";
 
     private long mQuestionId;
+    private long mNextQuestionId = 0;
     private int totalAnswersCount;
     private double currentPointsCount;
     private TextView mQuestionTextView;
@@ -84,7 +86,7 @@ public class Quiz {
      * Update questions and answers variants
      */
     private void update(Question question){
-        this.mQuestionId = question.getId();
+        setQuestionId(question.getId());
         long questionType = question.getQuestionType();
         List<Answer> answers = question.getAnswers();
         AnswersHandler answersHandler = new AnswersHandler(answers, questionType);
@@ -127,6 +129,7 @@ public class Quiz {
         mSharedPreferences.edit().putInt(TOTAL_ANSWERS_GIVEN, totalAnswersCount).apply();
         mSharedPreferences.edit().putString(CURRENT_POINTS, String.valueOf(currentPointsCount)).apply();
         mSharedPreferences.edit().putInt(REQUIRED_QUESTIONS_PASSED, mRequiredQuestionsPassed).apply();
+        mSharedPreferences.edit().putLong(NEXT_QUESTION_ID, getNextQuestionId()).apply();
     }
 
     /**
@@ -153,5 +156,21 @@ public class Quiz {
 
     public void setRequiredQuestionsPassed(int mRequiredQuestionsPassed) {
         this.mRequiredQuestionsPassed = mRequiredQuestionsPassed;
+    }
+
+    public long getNextQuestionId() {
+        return mNextQuestionId;
+    }
+
+    public void setNextQuestionId(long mNextQuestionId) {
+        this.mNextQuestionId = mNextQuestionId;
+    }
+
+    public long getQuestionId() {
+        return mQuestionId;
+    }
+
+    public void setQuestionId(long questionId) {
+        this.mQuestionId = questionId;
     }
 }

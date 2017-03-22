@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,17 @@ public class QuizActivity extends AppCompatActivity {
 
         //Initializing Quiz instance
         mQuiz = new Quiz(mButtons, mTvQuestion, sharedPreferences, mFirebaseManager);
+
+        mBtnResumeQuestion.setEnabled(false);
+        mBtnResumeQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFirebaseManager.getNextQuestion(mQuiz.getNextQuestionId());
+                mBtnResumeQuestion.setEnabled(false);
+            }
+        });
+        //Todo realize skipping mechanic
+        mBtnSkipQuestion.setEnabled(false);
     }
 
     @Override
@@ -155,27 +167,28 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
-        Answer answer = questionAnsweredEvent.getAnswer();
-        int totalAnswersGiven = mQuiz.getTotalAnswersCount();
-        mQuiz.setTotalAnswersCount(totalAnswersGiven + 1);
-        mQuiz.setCurrentPointsCount(mQuiz.getCurrentPointsCount() + answer.getPoints());
-        updateAnswersCount(mQuiz.getTotalAnswersCount());
-        updatePointsScoredCount(mQuiz.getCurrentPointsCount());
+       if(!mBtnResumeQuestion.isEnabled()){
+           mBtnResumeQuestion.setEnabled(true);
+           Answer answer = questionAnsweredEvent.getAnswer();
+           mQuiz.setNextQuestionId(answer.getNextQuestionId());
+           int totalAnswersGiven = mQuiz.getTotalAnswersCount();
+           mQuiz.setTotalAnswersCount(totalAnswersGiven + 1);
+           mQuiz.setCurrentPointsCount(mQuiz.getCurrentPointsCount() + answer.getPoints());
+           updateAnswersCount(mQuiz.getTotalAnswersCount());
+           updatePointsScoredCount(mQuiz.getCurrentPointsCount());
 
-        if(totalAnswersGiven == Quiz.BUY_FULL_VERSION_OFFER_MARKER){
-            Toast.makeText(this, getString(R.string.buy_full_version_offer), Toast.LENGTH_SHORT).show();
-        }
+           if(totalAnswersGiven == Quiz.BUY_FULL_VERSION_OFFER_MARKER){
+               Toast.makeText(this, getString(R.string.buy_full_version_offer), Toast.LENGTH_SHORT).show();
+           }
 
-        if(questionAnsweredEvent.isIsQuestionRequired()){
-            mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
-        }
+           if(questionAnsweredEvent.isIsQuestionRequired()){
+               mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
+           }
+       }
 
         if(questionAnsweredEvent.getAnswer().getNextQuestionId() == Question.LAST_QUESTION_ID){
             mQuiz.gameOver();
-            return;
         }
-
-        mFirebaseManager.getNextQuestion(answer.getNextQuestionId());
     }
 
     /**
@@ -195,6 +208,7 @@ public class QuizActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGameOverEvent(GameOverEvent gameOverEvent){
         mTvQuestion.setText(getString(R.string.game_over));
+        mBtnResumeQuestion.setEnabled(false);
 
         for(Button button: mButtons){
             button.setVisibility(View.INVISIBLE);
