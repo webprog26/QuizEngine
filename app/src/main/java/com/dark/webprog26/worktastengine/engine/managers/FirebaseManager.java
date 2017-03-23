@@ -6,6 +6,7 @@ import android.util.Log;
 import com.dark.webprog26.worktastengine.engine.Answer;
 import com.dark.webprog26.worktastengine.engine.Question;
 import com.dark.webprog26.worktastengine.engine.Quiz;
+import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
 import com.dark.webprog26.worktastengine.engine.firebase_app.QuizFirebaseApplication;
@@ -61,6 +62,9 @@ public class FirebaseManager {
         //If there is no previously saved question id, for example when app starts for the first time
         // or if the user deletes app's data manually quiz will start from the first question, which id = 0
         this.mNextQuestionId = mSharedPreferences.getLong(Quiz.NEXT_QUESTION_ID, 0);
+        if(mNextQuestionId == Question.LAST_QUESTION_ID){
+            mNextQuestionId = 0;
+        }
         Log.i(TAG, "FirebaseManager initialized");
     }
 
@@ -110,6 +114,12 @@ public class FirebaseManager {
      * @param questionIndex
      */
     public void getNextQuestion(long questionIndex){
+        if(questionIndex == Question.LAST_QUESTION_ID){
+            //We've reached the last question which answers has nextQuestionId = -1
+            //Run new GameOverEvent()
+            EventBus.getDefault().post(new GameOverEvent());
+            return;
+        }
         Log.i(TAG, "getNextQuestion() method showed question index " + questionIndex);
         mReference.child(String.valueOf(questionIndex)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

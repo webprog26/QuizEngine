@@ -86,10 +86,11 @@ public class Quiz {
      * Update questions and answers variants
      */
     private void update(Question question){
-        Log.i(TAG, "total answers given " + getTotalAnswersCount());
-        Log.i(TAG, "current points number " + getCurrentPointsCount());
-        Log.i(TAG, "required questions passed " + getRequiredQuestionsPassed());
-        Log.i(TAG, "loaded in Quiz\n" + question.toString());
+        Log.i(TAG, "next quesrion id is " + getNextQuestionId());
+//        Log.i(TAG, "total answers given " + getTotalAnswersCount());
+//        Log.i(TAG, "current points number " + getCurrentPointsCount());
+//        Log.i(TAG, "required questions passed " + getRequiredQuestionsPassed());
+//        Log.i(TAG, "loaded in Quiz\n" + question.toString());
         setQuestionId(question.getId());//will be saved in shared preferences to continue quiz if interrupted
         long questionType = question.getQuestionType();//to recognize required or optional questions
         List<Answer> answers = question.getAnswers();//getting answers from current questions
@@ -141,15 +142,6 @@ public class Quiz {
         mSharedPreferences.edit().putString(CURRENT_POINTS, String.valueOf(currentPointsCount)).apply();
         mSharedPreferences.edit().putInt(REQUIRED_QUESTIONS_PASSED, mRequiredQuestionsPassed).apply();
         mSharedPreferences.edit().putLong(NEXT_QUESTION_ID, getNextQuestionId()).apply();
-    }
-
-    /**
-     * Runs new GameOverEvent()
-     */
-    public void gameOver(){
-        Log.i(TAG, "game over. last question id was " + mQuestionId + "\n"
-        + "next question id is " + getNextQuestionId());
-        EventBus.getDefault().post(new GameOverEvent());
     }
 
     /**

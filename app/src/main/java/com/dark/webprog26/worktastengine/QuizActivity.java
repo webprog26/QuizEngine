@@ -211,12 +211,6 @@ public class QuizActivity extends AppCompatActivity {
                mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
            }
        }
-
-        //We've reached the last question which answers has nextQuestionId = -1
-        if(questionAnsweredEvent.getAnswer().getNextQuestionId() == Question.LAST_QUESTION_ID){
-            //Game is over
-            mQuiz.gameOver();
-        }
     }
 
     /**
