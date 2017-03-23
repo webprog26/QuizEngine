@@ -58,4 +58,11 @@ public class Answer {
     public void setNextQuestionId(long nextQuestionId) {
         this.nextQuestionId = nextQuestionId;
     }
+
+    @Override
+    public String toString() {
+        return "Answer " + getId() + "\n"
+                + "points " + getPoints() + "\n"
+                + "next question id " + getNextQuestionId();
+    }
 }

@@ -86,7 +86,7 @@ public class Quiz {
      * Update questions and answers variants
      */
     private void update(Question question){
-        Log.i(TAG, "next quesrion id is " + getNextQuestionId());
+        Log.i(TAG, "next question id is " + getNextQuestionId());
 //        Log.i(TAG, "total answers given " + getTotalAnswersCount());
 //        Log.i(TAG, "current points number " + getCurrentPointsCount());
 //        Log.i(TAG, "required questions passed " + getRequiredQuestionsPassed());

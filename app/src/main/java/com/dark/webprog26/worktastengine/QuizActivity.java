@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dark.webprog26.worktastengine.engine.Answer;
-import com.dark.webprog26.worktastengine.engine.Question;
 import com.dark.webprog26.worktastengine.engine.Quiz;
 import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
@@ -190,6 +190,7 @@ public class QuizActivity extends AppCompatActivity {
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
        if(!isAnswerGiven){
            isAnswerGiven = true;
+           Log.i(TAG, "need help = " + questionAnsweredEvent.needsHelp());
            //Enabling resume quiz button
            mBtnResumeQuestion.setEnabled(isAnswerGiven);
            Answer answer = questionAnsweredEvent.getAnswer();

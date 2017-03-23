@@ -15,10 +15,12 @@ public class QuestionAnsweredEvent {
 
     private final Answer mAnswer;
     private final boolean mIsQuestionRequired;
+    private final boolean mNeedsHelp;
 
-    public QuestionAnsweredEvent(Answer answer, boolean isQuestionRequired) {
+    public QuestionAnsweredEvent(Answer answer, boolean isQuestionRequired, boolean needsHelp) {
         this.mAnswer = answer;
         this.mIsQuestionRequired = isQuestionRequired;
+        this.mNeedsHelp = needsHelp;
     }
 
     public Answer getAnswer() {
@@ -27,5 +29,9 @@ public class QuestionAnsweredEvent {
 
     public boolean isIsQuestionRequired() {
         return mIsQuestionRequired;
+    }
+
+    public boolean needsHelp() {
+        return mNeedsHelp;
     }
 }
