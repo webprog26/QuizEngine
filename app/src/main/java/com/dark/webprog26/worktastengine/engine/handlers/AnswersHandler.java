@@ -37,7 +37,7 @@ public class AnswersHandler implements View.OnClickListener {
         int answerIndex = (int) v.getTag();
         long nextQuestionId = getAnswer(answerIndex).getNextQuestionId();
         Log.i(TAG, "next question id is " + nextQuestionId);
-        EventBus.getDefault().post(new QuestionAnsweredEvent(getAnswer((int) v.getTag()), isQuestionRequired(mQuestionType)));
+        EventBus.getDefault().post(new QuestionAnsweredEvent(getAnswer(answerIndex), isQuestionRequired(mQuestionType)));
     }
 
     protected Answer getAnswer(int i){

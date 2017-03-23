@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +54,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private Quiz mQuiz;
     private FirebaseManager mFirebaseManager;
+    private boolean isAnswerGiven = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,14 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
         //Binding QuizActivity to ButterKnife instance
         ButterKnife.bind(this);
+
+        //Answer and control buttons are invisible, until first question will be loaded
+        for(Button button: mButtons){
+            button.setVisibility(View.INVISIBLE);
+        }
+        mBtnResumeQuestion.setVisibility(View.INVISIBLE);
+        mBtnSkipQuestion.setVisibility(View.INVISIBLE);
+
         //Initializing FirebaseManager instance to perform quiz-database connection possible
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mFirebaseManager = new FirebaseManager(sharedPreferences);
@@ -74,12 +82,15 @@ public class QuizActivity extends AppCompatActivity {
         //Initializing Quiz instance
         mQuiz = new Quiz(mButtons, mTvQuestion, sharedPreferences, mFirebaseManager);
 
-        mBtnResumeQuestion.setEnabled(false);
+        mBtnResumeQuestion.setEnabled(isAnswerGiven);
         mBtnResumeQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mFirebaseManager.getNextQuestion(mQuiz.getNextQuestionId());
-                mBtnResumeQuestion.setEnabled(false);
+                if(isAnswerGiven){
+                    isAnswerGiven = false;
+                }
+                mBtnResumeQuestion.setEnabled(isAnswerGiven);
             }
         });
         //Todo realize skipping mechanic
@@ -127,7 +138,7 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        //Unregistering EventBus to avoid memory leaks
+        //Unregister EventBus to avoid memory leaks
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -154,9 +165,19 @@ public class QuizActivity extends AppCompatActivity {
             mPbQuizLoading.setVisibility(View.GONE);
         }
 
+        //Quiz has been loaded, so we should make quiz-control buttons visible
+        if(mBtnResumeQuestion.getVisibility() == View.INVISIBLE){
+            mBtnResumeQuestion.setVisibility(View.VISIBLE);
+        }
+        if(mBtnSkipQuestion.getVisibility() == View.INVISIBLE){
+            mBtnSkipQuestion.setVisibility(View.VISIBLE);
+        }
+
+        //Answer and control buttons are invisible, until next question will be loaded
         for(Button button: mButtons){
             button.setVisibility(View.INVISIBLE);
         }
+
         mQuiz.resume(nextQuestionEvent.getQuestion());
     }
 
@@ -167,26 +188,33 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
-       if(!mBtnResumeQuestion.isEnabled()){
-           mBtnResumeQuestion.setEnabled(true);
+       if(!isAnswerGiven){
+           isAnswerGiven = true;
+           //Enabling resume quiz button
+           mBtnResumeQuestion.setEnabled(isAnswerGiven);
            Answer answer = questionAnsweredEvent.getAnswer();
            mQuiz.setNextQuestionId(answer.getNextQuestionId());
            int totalAnswersGiven = mQuiz.getTotalAnswersCount();
            mQuiz.setTotalAnswersCount(totalAnswersGiven + 1);
            mQuiz.setCurrentPointsCount(mQuiz.getCurrentPointsCount() + answer.getPoints());
+           //updating scores on the user screen
            updateAnswersCount(mQuiz.getTotalAnswersCount());
            updatePointsScoredCount(mQuiz.getCurrentPointsCount());
 
+           //Ten questions answered. Show offer
            if(totalAnswersGiven == Quiz.BUY_FULL_VERSION_OFFER_MARKER){
                Toast.makeText(this, getString(R.string.buy_full_version_offer), Toast.LENGTH_SHORT).show();
            }
 
+           //Increasing required questions count
            if(questionAnsweredEvent.isIsQuestionRequired()){
                mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
            }
        }
 
+        //We've reached the last question which answers has nextQuestionId = -1
         if(questionAnsweredEvent.getAnswer().getNextQuestionId() == Question.LAST_QUESTION_ID){
+            //Game is over
             mQuiz.gameOver();
         }
     }
@@ -223,6 +251,9 @@ public class QuizActivity extends AppCompatActivity {
                 mQuiz.resetQuiz();
                 updateAnswersCount(mQuiz.getTotalAnswersCount());
                 updatePointsScoredCount(mQuiz.getCurrentPointsCount());
+                if(isAnswerGiven){
+                    isAnswerGiven = false;
+                }
                 v.setVisibility(View.GONE);
             }
         });

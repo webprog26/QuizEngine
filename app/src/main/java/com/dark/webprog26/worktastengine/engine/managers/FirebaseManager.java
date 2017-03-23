@@ -60,7 +60,8 @@ public class FirebaseManager {
         //When app resumes it's work or restarts FirebaseManager reads question id value from SharedPreferences
         //If there is no previously saved question id, for example when app starts for the first time
         // or if the user deletes app's data manually quiz will start from the first question, which id = 0
-        this.mNextQuestionId = mSharedPreferences.getLong(Quiz.SAVED_QUESTION_ID, 0);
+        this.mNextQuestionId = mSharedPreferences.getLong(Quiz.NEXT_QUESTION_ID, 0);
+        Log.i(TAG, "FirebaseManager initialized");
     }
 
     /**
@@ -74,8 +75,10 @@ public class FirebaseManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
                     //Database exists. Get next question from it
+                    Log.i(TAG, "database exists. Loading question with following id " + mNextQuestionId);
                     getNextQuestion(mNextQuestionId);
                 } else {
+                    Log.i(TAG, "database not exists. Posting new ReadJSONFromAssetsEvent to read from file " + JSON_FILE_NAME);
                     //Database not exists. Read values from JSON file stored in device assets directory
                     EventBus.getDefault().post(new ReadJSONFromAssetsEvent(JSON_FILE_NAME));
                 }
@@ -93,7 +96,9 @@ public class FirebaseManager {
      * @param questionList {@link List}
      */
     public void uploadValuesToDb(List<Question> questionList){
+        Log.i(TAG, "uploading values to db");
         for(Question question: questionList){
+            Log.i(TAG, question.toString());
             //Upload values to database
             mReference.child(String.valueOf(question.getId())).setValue(question);
         }
@@ -105,7 +110,7 @@ public class FirebaseManager {
      * @param questionIndex
      */
     public void getNextQuestion(long questionIndex){
-        Log.i(TAG, "next question index " + questionIndex);
+        Log.i(TAG, "getNextQuestion() method showed question index " + questionIndex);
         mReference.child(String.valueOf(questionIndex)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -86,19 +86,30 @@ public class Quiz {
      * Update questions and answers variants
      */
     private void update(Question question){
-        setQuestionId(question.getId());
-        long questionType = question.getQuestionType();
-        List<Answer> answers = question.getAnswers();
-        AnswersHandler answersHandler = new AnswersHandler(answers, questionType);
+        Log.i(TAG, "total answers given " + getTotalAnswersCount());
+        Log.i(TAG, "current points number " + getCurrentPointsCount());
+        Log.i(TAG, "required questions passed " + getRequiredQuestionsPassed());
+        Log.i(TAG, "loaded in Quiz\n" + question.toString());
+        setQuestionId(question.getId());//will be saved in shared preferences to continue quiz if interrupted
+        long questionType = question.getQuestionType();//to recognize required or optional questions
+        List<Answer> answers = question.getAnswers();//getting answers from current questions
+        AnswersHandler answersHandler = new AnswersHandler(answers, questionType);//initializing answer-buttons click handler
+                                                                                   // it requires answers and question type
+
         for (Answer answer: answers){
             Log.i(TAG, answer.getAnswerText());
         }
-        mQuestionTextView.setText(question.getQuestionString());
+
+        mQuestionTextView.setText(question.getQuestionString());//setting question text to TextView
+
+        //initialized answer buttons
         for(int i = 0; i < question.getAnswersNum(); i++){
-            Answer answer = answers.get(i);
-                mButtons[i].setText(answer.getAnswerText());
-                mButtons[i].setTag(i);
-                mButtons[i].setOnClickListener(answersHandler);
+            Answer answer = answers.get(i);//getting answer from list
+                mButtons[i].setText(answer.getAnswerText());//setting answer text to button
+                mButtons[i].setTag(i);//tag to recognize chosen answer in listener
+                mButtons[i].setOnClickListener(answersHandler);//setting listener
+            //questions may have different number of answers
+            //"inactive" buttons should be hidden
             if(mButtons[i].getVisibility() == View.INVISIBLE){
                 mButtons[i].setVisibility(View.VISIBLE);
             }
@@ -136,6 +147,8 @@ public class Quiz {
      * Runs new GameOverEvent()
      */
     public void gameOver(){
+        Log.i(TAG, "game over. last question id was " + mQuestionId + "\n"
+        + "next question id is " + getNextQuestionId());
         EventBus.getDefault().post(new GameOverEvent());
     }
 
