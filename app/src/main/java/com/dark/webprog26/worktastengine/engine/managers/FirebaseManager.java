@@ -68,23 +68,30 @@ public class FirebaseManager {
         Log.i(TAG, "FirebaseManager initialized");
     }
 
+    public void getQuestionsFromFirebaseDB(){
+        Log.i(ReadFromJSONManager.TRACK_JSON, "Posting ReadJSONFromAssetsEvent in FirebaseManager");
+        EventBus.getDefault().post(new ReadJSONFromAssetsEvent(JSON_FILE_NAME));
+    }
+
     /**
      * This method add {@link ValueEventListener} to {@link DatabaseReference} and first of all
      * checks is there any data in database at all. If database has data, then it calls getNextQuestion(long questionIndex) method,
      * otherwise runs new ReadJSONFromAssetsEvent
      */
-    public void checkIsFirebaseAlreadyFilled(){
+    private void checkIsFirebaseAlreadyFilled(){
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
                     //Database exists. Get next question from it
+                    Log.i(ReadFromJSONManager.TRACK_JSON, "Data uploaded to DB successfully in FirebaseManager");
                     Log.i(TAG, "database exists. Loading question with following id " + mNextQuestionId);
                     getNextQuestion(mNextQuestionId);
                 } else {
+                    Log.i(ReadFromJSONManager.TRACK_JSON, "Something went wrong with DB, Start reading from JSON again");
                     Log.i(TAG, "database not exists. Posting new ReadJSONFromAssetsEvent to read from file " + JSON_FILE_NAME);
                     //Database not exists. Read values from JSON file stored in device assets directory
-                    EventBus.getDefault().post(new ReadJSONFromAssetsEvent(JSON_FILE_NAME));
+                    getQuestionsFromFirebaseDB();
                 }
             }
 
@@ -100,12 +107,14 @@ public class FirebaseManager {
      * @param questionList {@link List}
      */
     public void uploadValuesToDb(List<Question> questionList){
+        Log.i(ReadFromJSONManager.TRACK_JSON, "Uploading values to DB in FirebaseManager");
         Log.i(TAG, "uploading values to db");
         for(Question question: questionList){
             Log.i(TAG, question.toString());
             //Upload values to database
             mReference.child(String.valueOf(question.getId())).setValue(question);
         }
+        checkIsFirebaseAlreadyFilled();
     }
 
     /**
@@ -114,6 +123,7 @@ public class FirebaseManager {
      * @param questionIndex
      */
     public void getNextQuestion(long questionIndex){
+        Log.i(ReadFromJSONManager.TRACK_JSON, "Calling FirebaseManager getNextQuestion() method with question id " + questionIndex);
         if(questionIndex == Question.LAST_QUESTION_ID){
             //We've reached the last question which answers has nextQuestionId = -1
             //Run new GameOverEvent()

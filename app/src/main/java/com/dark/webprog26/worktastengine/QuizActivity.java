@@ -110,7 +110,7 @@ public class QuizActivity extends AppCompatActivity {
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
             //Somebody may think that it is useless: to check does data exists everytime quiz resumes,
             //but what if the user deletes app data, while it is paused? By this reason, i'm sure it is necessary step
-            mFirebaseManager.checkIsFirebaseAlreadyFilled();
+            mFirebaseManager.getQuestionsFromFirebaseDB();
     }
 
     @Override
@@ -149,6 +149,8 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onQuestionsReadFromJSONEvent(QuestionsReadFromJSONEvent questionsReadFromJSONEvent){
+        Log.i(ReadFromJSONManager.TRACK_JSON, "Handling QuestionsReadFromJSONEvent in QuizActivity");
+        Log.i(ReadFromJSONManager.TRACK_JSON, "Calling FirebaseManager uploadValuesToDb method in QuizActivity");
         mFirebaseManager.uploadValuesToDb(questionsReadFromJSONEvent.getQuestionsList());
     }
 
@@ -220,6 +222,7 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onReadJSONFromAssetsEvent(ReadJSONFromAssetsEvent readJSONFromAssetsEvent){
+        Log.i(ReadFromJSONManager.TRACK_JSON, "Handling ReadJSONFromAssetsEvent in QuizActivity");
         ReadFromJSONManager.jsonReadFromAssets(ReadJSONFromAssetsManager.loadJSONFromAsset(getAssets(), readJSONFromAssetsEvent.getJSONFileName()));
     }
 

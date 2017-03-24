@@ -24,6 +24,7 @@ public class ReadFromJSONManager {
      * Reads JSON file with questions/answers from device assets directory
      */
 
+    public static final String TRACK_JSON = "track_JSON";
 
     private static final String TAG = "JSONManager";
 
@@ -44,6 +45,7 @@ public class ReadFromJSONManager {
      * @param jsonString {@link String}
      */
     public static void jsonReadFromAssets(String jsonString) {
+        Log.i(TRACK_JSON, "REading from JSON file in ReadFromJSONManager");
         //Initializes collection, this time ArrayList, to store Question instances, that have been read
         List<Question> questionsList = new ArrayList<>();
         if(jsonString != null){
@@ -106,6 +108,7 @@ public class ReadFromJSONManager {
             Log.i(TAG, "jsonString is null");
         }
         //Run new QuestionsReadFromJSONEvent with questions List as a parameter
+        Log.i(TRACK_JSON, "Posting QuestionsReadFromJSONEvent in ReadFromJSONManager");
         EventBus.getDefault().post(new QuestionsReadFromJSONEvent(questionsList));
     }
 }
