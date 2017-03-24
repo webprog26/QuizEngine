@@ -45,6 +45,9 @@ public class Quiz {
     private SharedPreferences mSharedPreferences;
     private FirebaseManager mFirebaseManager;
     private int mRequiredQuestionsPassed;
+    private boolean shallShowHelp = false;
+    //for testing ReferenceActivity
+    private String mQuestionText;
 
     public Quiz(Button[] buttons,
                 TextView questionTextView, SharedPreferences sharedPreferences, FirebaseManager firebaseManager) {
@@ -93,6 +96,7 @@ public class Quiz {
 //        Log.i(TAG, "current points number " + getCurrentPointsCount());
 //        Log.i(TAG, "required questions passed " + getRequiredQuestionsPassed());
 //        Log.i(TAG, "loaded in Quiz\n" + question.toString());
+        setQuestionText(question.getQuestionString());//for testing ReferenceActivity
         setQuestionId(question.getId());//will be saved in shared preferences to continue quiz if interrupted
         long questionType = question.getQuestionType();//to recognize required or optional questions
         List<Answer> answers = question.getAnswers();//getting answers from current questions
@@ -179,5 +183,23 @@ public class Quiz {
 
     public void setQuestionId(long questionId) {
         this.mQuestionId = questionId;
+    }
+
+    public boolean getShallShowHelp() {
+        return shallShowHelp;
+    }
+
+    public void setShallShowHelp(boolean shallShowHelp) {
+        this.shallShowHelp = shallShowHelp;
+    }
+
+    //for testing ReferenceActivity
+
+    public String getQuestionText() {
+        return mQuestionText;
+    }
+
+    public void setQuestionText(String questionText) {
+        this.mQuestionText = questionText;
     }
 }

@@ -24,4 +24,5 @@
                                     pelican gulper arowana, lampfish mahseer?</string>
     <string name="begin_test">Begin test</string>
     <string name="buy_full_version_offer">Buy full version!</string>
+    <string name="reference_for_the_question">Reference for the question: \"%s\"</string>
 </resources>

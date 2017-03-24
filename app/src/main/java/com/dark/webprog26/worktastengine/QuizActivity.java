@@ -1,5 +1,6 @@
 package com.dark.webprog26.worktastengine;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,7 @@ public class QuizActivity extends AppCompatActivity {
     private Quiz mQuiz;
     private FirebaseManager mFirebaseManager;
     private boolean isAnswerGiven = false;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,26 +73,35 @@ public class QuizActivity extends AppCompatActivity {
         mBtnSkipQuestion.setVisibility(View.INVISIBLE);
 
         //Initializing FirebaseManager instance to perform quiz-database connection possible
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mFirebaseManager = new FirebaseManager(sharedPreferences);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mFirebaseManager = new FirebaseManager(mSharedPreferences);
 
         //Reading game scores saved in SharedPrefernces and update game
-        int totalAnswersGiven = sharedPreferences.getInt(Quiz.TOTAL_ANSWERS_GIVEN, 0);
+        int totalAnswersGiven = mSharedPreferences.getInt(Quiz.TOTAL_ANSWERS_GIVEN, 0);
         updateAnswersCount(totalAnswersGiven);
-        updatePointsScoredCount(Double.parseDouble(sharedPreferences.getString(Quiz.CURRENT_POINTS, "0")));
+        updatePointsScoredCount(Double.parseDouble(mSharedPreferences.getString(Quiz.CURRENT_POINTS, "0")));
 
         //Initializing Quiz instance
-        mQuiz = new Quiz(mButtons, mTvQuestion, sharedPreferences, mFirebaseManager);
+        mQuiz = new Quiz(mButtons, mTvQuestion, mSharedPreferences, mFirebaseManager);
 
         mBtnResumeQuestion.setEnabled(isAnswerGiven);
         mBtnResumeQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFirebaseManager.getNextQuestion(mQuiz.getNextQuestionId());
                 if(isAnswerGiven){
                     isAnswerGiven = false;
                 }
+
                 mBtnResumeQuestion.setEnabled(isAnswerGiven);
+                if(mQuiz.getShallShowHelp()){
+                    mQuiz.setShallShowHelp(false);
+                    Intent referenceIntent = new Intent(QuizActivity.this, ReferenceActivity.class);
+                    referenceIntent.putExtra(ReferenceActivity.REFERENCE_INDEX, mQuiz.getQuestionId());
+                    referenceIntent.putExtra(ReferenceActivity.REFERENCE_QUESTION_TEXT, mQuiz.getQuestionText());
+                    startActivity(referenceIntent);
+                } else {
+                    mFirebaseManager.getNextQuestion(mQuiz.getNextQuestionId());
+                }
             }
         });
         //Todo realize skipping mechanic
@@ -110,7 +121,12 @@ public class QuizActivity extends AppCompatActivity {
         getWindow().setBackgroundDrawableResource(R.drawable.app_bg);
             //Somebody may think that it is useless: to check does data exists everytime quiz resumes,
             //but what if the user deletes app data, while it is paused? By this reason, i'm sure it is necessary step
+        if(mSharedPreferences.getBoolean(Quiz.IS_RETRYING, false)){
+            mSharedPreferences.edit().putBoolean(Quiz.IS_RETRYING, false).apply();
+            mFirebaseManager.getNextQuestion(mQuiz.getNextQuestionId());
+        } else {
             mFirebaseManager.getQuestionsFromFirebaseDB();
+        }
     }
 
     @Override
@@ -161,7 +177,6 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNextQuestionEvent(NextQuestionEvent nextQuestionEvent){
-
         //Showed while data is uploading to database. Normally at the first app's launch
         if(mPbQuizLoading.getVisibility() == View.VISIBLE){
             mPbQuizLoading.setVisibility(View.GONE);
@@ -192,7 +207,10 @@ public class QuizActivity extends AppCompatActivity {
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
        if(!isAnswerGiven){
            isAnswerGiven = true;
-           Log.i(TAG, "need help = " + questionAnsweredEvent.needsHelp());
+           if(questionAnsweredEvent.needsHelp()){
+               Log.i(TAG, "need help = " + questionAnsweredEvent.needsHelp());
+               mQuiz.setShallShowHelp(true);
+           }
            //Enabling resume quiz button
            mBtnResumeQuestion.setEnabled(isAnswerGiven);
            Answer answer = questionAnsweredEvent.getAnswer();
@@ -234,7 +252,12 @@ public class QuizActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGameOverEvent(GameOverEvent gameOverEvent){
         mTvQuestion.setText(getString(R.string.game_over));
+
+        mBtnSkipQuestion.setEnabled(false);
+        mBtnSkipQuestion.setVisibility(View.INVISIBLE);
         mBtnResumeQuestion.setEnabled(false);
+        mBtnResumeQuestion.setVisibility(View.INVISIBLE);
+
 
         for(Button button: mButtons){
             button.setVisibility(View.INVISIBLE);
