@@ -32,6 +32,8 @@ public class Quiz {
 
     public static final int BUY_FULL_VERSION_OFFER_MARKER = 10;
 
+    public static final String IS_RETRYING = "is_retrying";
+
     private static final String TAG = "Quiz_TAG";
 
     private long mQuestionId;
