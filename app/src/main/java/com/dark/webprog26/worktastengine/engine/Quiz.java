@@ -3,14 +3,10 @@ package com.dark.webprog26.worktastengine.engine;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.dark.webprog26.worktastengine.engine.events.GameOverEvent;
 import com.dark.webprog26.worktastengine.engine.handlers.AnswersHandler;
 import com.dark.webprog26.worktastengine.engine.managers.FirebaseManager;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -41,7 +37,7 @@ public class Quiz {
     private int totalAnswersCount;
     private double currentPointsCount;
     private TextView mQuestionTextView;
-    private Button[] mButtons;
+    private TextView[] mAnswersTextViews;
     private SharedPreferences mSharedPreferences;
     private FirebaseManager mFirebaseManager;
     private int mRequiredQuestionsPassed;
@@ -51,10 +47,10 @@ public class Quiz {
     private Answer mCurrentAnswer;
     private boolean isQuestionRequired;
 
-    public Quiz(Button[] buttons,
+    public Quiz(TextView[] answersTextViews,
                 TextView questionTextView, SharedPreferences sharedPreferences, FirebaseManager firebaseManager) {
         this.mQuestionTextView = questionTextView;
-        this.mButtons = buttons;
+        this.mAnswersTextViews = answersTextViews;
         this.mSharedPreferences = sharedPreferences;
         this.mFirebaseManager = firebaseManager;
         this.mRequiredQuestionsPassed = mSharedPreferences.getInt(REQUIRED_QUESTIONS_PASSED, 0);
@@ -114,13 +110,13 @@ public class Quiz {
         //initialized answer buttons
         for(int i = 0; i < question.getAnswersNum(); i++){
             Answer answer = answers.get(i);//getting answer from list
-                mButtons[i].setText(answer.getAnswerText());//setting answer text to button
-                mButtons[i].setTag(i);//tag to recognize chosen answer in listener
-                mButtons[i].setOnClickListener(answersHandler);//setting listener
+                mAnswersTextViews[i].setText(answer.getAnswerText());//setting answer text to button
+                mAnswersTextViews[i].setTag(i);//tag to recognize chosen answer in listener
+                mAnswersTextViews[i].setOnClickListener(answersHandler);//setting listener
             //questions may have different number of answers
             //"inactive" buttons should be hidden
-            if(mButtons[i].getVisibility() == View.INVISIBLE){
-                mButtons[i].setVisibility(View.VISIBLE);
+            if(mAnswersTextViews[i].getVisibility() == View.INVISIBLE){
+                mAnswersTextViews[i].setVisibility(View.VISIBLE);
             }
         }
     }

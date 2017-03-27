@@ -37,7 +37,7 @@ public class QuizActivity extends AppCompatActivity {
 
     //Initializing GUI
     @BindViews({R.id.btnFirst, R.id.btnSecond, R.id.btnThird, R.id.btnFourth})
-    Button[] mButtons;
+    TextView[] mAnswersTextViews;
     @BindView(R.id.tvQuestion)
     TextView mTvQuestion;
     @BindView(R.id.tvAnswersGiven)
@@ -66,8 +66,8 @@ public class QuizActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         //Answer and control buttons are invisible, until first question will be loaded
-        for(Button button: mButtons){
-            button.setVisibility(View.INVISIBLE);
+        for(TextView answerTextView: mAnswersTextViews){
+            answerTextView.setVisibility(View.INVISIBLE);
         }
         mBtnResumeQuestion.setVisibility(View.INVISIBLE);
         mBtnSkipQuestion.setVisibility(View.INVISIBLE);
@@ -82,7 +82,7 @@ public class QuizActivity extends AppCompatActivity {
         updatePointsScoredCount(Double.parseDouble(mSharedPreferences.getString(Quiz.CURRENT_POINTS, "0")));
 
         //Initializing Quiz instance
-        mQuiz = new Quiz(mButtons, mTvQuestion, mSharedPreferences, mFirebaseManager);
+        mQuiz = new Quiz(mAnswersTextViews, mTvQuestion, mSharedPreferences, mFirebaseManager);
 
         mBtnResumeQuestion.setEnabled(isAnswerGiven);
         mBtnResumeQuestion.setOnClickListener(new View.OnClickListener() {
@@ -214,8 +214,8 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         //Answer and control buttons are invisible, until next question will be loaded
-        for(Button button: mButtons){
-            button.setVisibility(View.INVISIBLE);
+        for(TextView answerTextView: mAnswersTextViews){
+            answerTextView.setVisibility(View.INVISIBLE);
         }
 
         mQuiz.resume(nextQuestionEvent.getQuestion());
@@ -270,8 +270,8 @@ public class QuizActivity extends AppCompatActivity {
         mBtnResumeQuestion.setVisibility(View.INVISIBLE);
 
 
-        for(Button button: mButtons){
-            button.setVisibility(View.INVISIBLE);
+        for(TextView answerTextView: mAnswersTextViews){
+            answerTextView.setVisibility(View.INVISIBLE);
         }
         if(mBtnRestart.getVisibility() == View.GONE){
             mBtnRestart.setVisibility(View.VISIBLE);
