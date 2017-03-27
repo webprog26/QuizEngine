@@ -19,6 +19,7 @@ import com.dark.webprog26.worktastengine.engine.events.NextQuestionEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionAnsweredEvent;
 import com.dark.webprog26.worktastengine.engine.events.QuestionsReadFromJSONEvent;
 import com.dark.webprog26.worktastengine.engine.events.ReadJSONFromAssetsEvent;
+import com.dark.webprog26.worktastengine.engine.managers.AnswerViewBackgroundManager;
 import com.dark.webprog26.worktastengine.engine.managers.FirebaseManager;
 import com.dark.webprog26.worktastengine.engine.managers.ReadFromJSONManager;
 import com.dark.webprog26.worktastengine.engine.managers.ReadJSONFromAssetsManager;
@@ -228,6 +229,10 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
+
+        AnswerViewBackgroundManager.setAnswerTextViewBackground(mAnswersTextViews, null);
+        AnswerViewBackgroundManager.setAnswerTextViewBackground(mAnswersTextViews[questionAnsweredEvent.getAnswerViewIndex()],
+                                                                getResources().getDrawable(R.drawable.answer_view_checked_bg));
         //Setting chosen answer as current for the Quiz everytime
         // when user clicks on answer View. This means that user
         // can change his decision unlimited number of times,

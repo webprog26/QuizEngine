@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="questionChecked">#799eda</color>
+    <color name="resumeButton">#70b66b</color>
+    <color name="skipButton">#f2ad52</color>
 </resources>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.dark.webprog26.worktastengine.engine.handlers.AnswersHandler;
+import com.dark.webprog26.worktastengine.engine.managers.AnswerViewBackgroundManager;
 import com.dark.webprog26.worktastengine.engine.managers.FirebaseManager;
 
 import java.util.List;
@@ -106,7 +107,7 @@ public class Quiz {
         }
 
         mQuestionTextView.setText(question.getQuestionString());//setting question text to TextView
-
+        AnswerViewBackgroundManager.setAnswerTextViewBackground(mAnswersTextViews, null);
         //initialized answer buttons
         for(int i = 0; i < question.getAnswersNum(); i++){
             Answer answer = answers.get(i);//getting answer from list

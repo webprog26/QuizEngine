@@ -16,11 +16,13 @@ public class QuestionAnsweredEvent {
     private final Answer mAnswer;
     private final boolean mIsQuestionRequired;
     private final boolean mNeedsHelp;
+    private final int mAnswerViewIndex;
 
-    public QuestionAnsweredEvent(Answer answer, boolean isQuestionRequired, boolean needsHelp) {
+    public QuestionAnsweredEvent(Answer answer, boolean isQuestionRequired, boolean needsHelp, int answerViewIndex) {
         this.mAnswer = answer;
         this.mIsQuestionRequired = isQuestionRequired;
         this.mNeedsHelp = needsHelp;
+        this.mAnswerViewIndex = answerViewIndex;
     }
 
     public Answer getAnswer() {
@@ -33,5 +35,9 @@ public class QuestionAnsweredEvent {
 
     public boolean needsHelp() {
         return mNeedsHelp;
+    }
+
+    public int getAnswerViewIndex() {
+        return mAnswerViewIndex;
     }
 }
