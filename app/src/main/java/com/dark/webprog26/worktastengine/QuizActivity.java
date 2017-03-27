@@ -91,15 +91,38 @@ public class QuizActivity extends AppCompatActivity {
                 if(isAnswerGiven){
                     isAnswerGiven = false;
                 }
+                //Getting current answer instance from Quiz
+                Answer answer = mQuiz.getCurrentAnswer();
+
+                mQuiz.setNextQuestionId(answer.getNextQuestionId());
+                int totalAnswersGiven = mQuiz.getTotalAnswersCount();
+                mQuiz.setTotalAnswersCount(totalAnswersGiven + 1);
+                mQuiz.setCurrentPointsCount(mQuiz.getCurrentPointsCount() + answer.getPoints());
+                //updating scores on the user screen
+                updateAnswersCount(mQuiz.getTotalAnswersCount());
+                updatePointsScoredCount(mQuiz.getCurrentPointsCount());
+
+                //Ten questions answered. Show offer
+                if(totalAnswersGiven == Quiz.BUY_FULL_VERSION_OFFER_MARKER){
+                    Toast.makeText(QuizActivity.this, getString(R.string.buy_full_version_offer), Toast.LENGTH_SHORT).show();
+                }
+
+                //Increasing required questions count
+                if(mQuiz.isQuestionRequired()){
+                    mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
+                }
 
                 mBtnResumeQuestion.setEnabled(isAnswerGiven);
                 if(mQuiz.getShallShowHelp()){
                     mQuiz.setShallShowHelp(false);
+                    //Constructing intent for ReferenceActivity
                     Intent referenceIntent = new Intent(QuizActivity.this, ReferenceActivity.class);
                     referenceIntent.putExtra(ReferenceActivity.REFERENCE_INDEX, mQuiz.getQuestionId());
                     referenceIntent.putExtra(ReferenceActivity.REFERENCE_QUESTION_TEXT, mQuiz.getQuestionText());
+                    //Starting referenceActivity
                     startActivity(referenceIntent);
                 } else {
+                    //Answer was correct, no need to show reference, show next question
                     mFirebaseManager.getNextQuestion(mQuiz.getNextQuestionId());
                 }
             }
@@ -205,32 +228,20 @@ public class QuizActivity extends AppCompatActivity {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionAnsweredEvent(QuestionAnsweredEvent questionAnsweredEvent){
+        //Setting chosen answer as current for the Quiz everytime
+        // when user clicks on answer View. This means that user
+        // can change his decision unlimited number of times,
+        // but only until "Resume" button was clicked
+        mQuiz.setCurrentAnswer(questionAnsweredEvent.getAnswer());
+        mQuiz.setQuestionRequired(questionAnsweredEvent.isIsQuestionRequired());
+        Log.i(TAG, "need help = " + questionAnsweredEvent.needsHelp());
+        //Setting shallShowHelp marker
+        mQuiz.setShallShowHelp(questionAnsweredEvent.needsHelp());
        if(!isAnswerGiven){
            isAnswerGiven = true;
-           if(questionAnsweredEvent.needsHelp()){
-               Log.i(TAG, "need help = " + questionAnsweredEvent.needsHelp());
-               mQuiz.setShallShowHelp(true);
-           }
+
            //Enabling resume quiz button
            mBtnResumeQuestion.setEnabled(isAnswerGiven);
-           Answer answer = questionAnsweredEvent.getAnswer();
-           mQuiz.setNextQuestionId(answer.getNextQuestionId());
-           int totalAnswersGiven = mQuiz.getTotalAnswersCount();
-           mQuiz.setTotalAnswersCount(totalAnswersGiven + 1);
-           mQuiz.setCurrentPointsCount(mQuiz.getCurrentPointsCount() + answer.getPoints());
-           //updating scores on the user screen
-           updateAnswersCount(mQuiz.getTotalAnswersCount());
-           updatePointsScoredCount(mQuiz.getCurrentPointsCount());
-
-           //Ten questions answered. Show offer
-           if(totalAnswersGiven == Quiz.BUY_FULL_VERSION_OFFER_MARKER){
-               Toast.makeText(this, getString(R.string.buy_full_version_offer), Toast.LENGTH_SHORT).show();
-           }
-
-           //Increasing required questions count
-           if(questionAnsweredEvent.isIsQuestionRequired()){
-               mQuiz.setRequiredQuestionsPassed(mQuiz.getRequiredQuestionsPassed() + 1);
-           }
        }
     }
 

@@ -48,6 +48,8 @@ public class Quiz {
     private boolean shallShowHelp = false;
     //for testing ReferenceActivity
     private String mQuestionText;
+    private Answer mCurrentAnswer;
+    private boolean isQuestionRequired;
 
     public Quiz(Button[] buttons,
                 TextView questionTextView, SharedPreferences sharedPreferences, FirebaseManager firebaseManager) {
@@ -193,7 +195,24 @@ public class Quiz {
         this.shallShowHelp = shallShowHelp;
     }
 
-    //for testing ReferenceActivity
+    public Answer getCurrentAnswer() {
+        Log.i(TAG, "current answer points " + mCurrentAnswer.getPoints());
+        return mCurrentAnswer;
+    }
+
+    public void setCurrentAnswer(Answer currentAnswer) {
+        this.mCurrentAnswer = currentAnswer;
+    }
+
+    public boolean isQuestionRequired() {
+        return isQuestionRequired;
+    }
+
+    public void setQuestionRequired(boolean questionRequired) {
+        isQuestionRequired = questionRequired;
+    }
+
+//for testing ReferenceActivity
 
     public String getQuestionText() {
         return mQuestionText;
